@@ -136,12 +136,32 @@ def add_patient(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            import json as json_module
 
             manual_id = data.get('patient_id')
+            scan_data = data.get('scan', '')
 
-            scan_image = data.get('scan', '')
-            if ',' in scan_image:
-                scan_image = scan_image.split(',')[1]
+            # Handle multiple images (array) or single image (backward compatibility)
+            if isinstance(scan_data, list):
+                # Multiple images - store as JSON array
+                images_list = []
+                for img in scan_data:
+                    if isinstance(img, str):
+                        # Remove data:image prefix if present
+                        if ',' in img:
+                            images_list.append(img.split(',')[1])
+                        else:
+                            images_list.append(img)
+                    else:
+                        images_list.append(str(img))
+                scan_image = json_module.dumps(images_list)
+            else:
+                # Single image (old format - backward compatibility)
+                scan_image = scan_data
+                if isinstance(scan_image, str) and ',' in scan_image:
+                    scan_image = scan_image.split(',')[1]
+                # Convert to array format for consistency
+                scan_image = json_module.dumps([scan_image]) if scan_image else json_module.dumps([])
 
             hospital_id = data.get('hospital_id')
 
@@ -175,7 +195,7 @@ def add_patient(request):
                 scan_type=data.get('scanType'),
                 body_part=data.get('bodyPart'),
                 ref_by=data.get('refBy'),
-                scan_image=scan_image,
+                scan_image=scan_image,  # JSON array of images
                 center=center_name,
                 created_by=created_by   # ⭐ hospital user linked
             )
@@ -328,12 +348,35 @@ def create_report(request, patient_id):
         data = json.loads(request.body)
         try:
             patient = Patient.objects.get(id=patient_id)
+            report_status = data.get('status', 'DRAFT')
             report = Report.objects.create(
                 patient=patient,
                 report_text=data.get('report_text', ''),
-                status=data.get('status', 'DRAFT'),
+                status=report_status,
                 created_by=UserAccount.objects.get(id=request.session.get('user_id')) if request.session.get('user_id') else None
             )
+            
+            # Update Patient status when report is FINAL
+            if report_status == 'FINAL':
+                patient.status = 'FINAL'
+                
+                # Set final_time only once
+                if not patient.final_time:
+                    patient.final_time = timezone.now()
+                
+                # Calculate TAT if assigned_time exists
+                if patient.assigned_time:
+                    delta = patient.final_time - patient.assigned_time
+                    total_minutes = max(1, int(delta.total_seconds() // 60))
+                    hours = total_minutes // 60
+                    minutes = total_minutes % 60
+                    tat_text = f"{hours}h {minutes}m" if hours else f"{minutes} min"
+                    patient.tat = tat_text
+                
+                # Update patient report text from the report
+                patient.report = report.report_text
+                patient.save()
+            
             return JsonResponse({'id': report.id, 'message': 'Report created'})
         except Patient.DoesNotExist:
             return JsonResponse({'error': 'Patient not found'}, status=404)
@@ -360,9 +403,43 @@ def update_report(request, report_id):
         try:
             report = Report.objects.get(id=report_id)
             report.report_text = data.get('report_text', report.report_text)
-            report.status = data.get('status', report.status)
+            new_status = data.get('status', report.status)
+            report.status = new_status
             report.save()
-            return JsonResponse({'message': 'Report updated'})
+            
+            # Update Patient status when report is FINAL
+            patient = report.patient
+            if new_status == 'FINAL':
+                patient.status = 'FINAL'
+                
+                # Set final_time only once
+                if not patient.final_time:
+                    patient.final_time = timezone.now()
+                
+                # Calculate TAT if assigned_time exists
+                if patient.assigned_time:
+                    delta = patient.final_time - patient.assigned_time
+                    total_minutes = max(1, int(delta.total_seconds() // 60))
+                    hours = total_minutes // 60
+                    minutes = total_minutes % 60
+                    tat_text = f"{hours}h {minutes}m" if hours else f"{minutes} min"
+                    patient.tat = tat_text
+                
+                # Update patient report text from the report
+                patient.report = report.report_text
+            else:
+                # If status is DRAFT, keep patient status as is (don't change to FINAL)
+                # Only clear TAT and final_time if needed
+                if patient.status == 'FINAL':
+                    # Don't change patient status if it's already FINAL
+                    pass
+                else:
+                    patient.tat = None
+                    patient.final_time = None
+            
+            patient.save()
+            
+            return JsonResponse({'message': 'Report updated', 'status': 'success'})
         except Report.DoesNotExist:
             return JsonResponse({'error': 'Report not found'}, status=404)
 
@@ -1194,15 +1271,27 @@ import json
 def save_cropped_image(request, pk):
     if request.method == "POST":
         try:
+            import json as json_module
             patient = Patient.objects.get(id=pk)
             data = json.loads(request.body)
             cropped_img = data.get("scan_image")
+            image_index = data.get("image_index", 0)  # Which image to update
 
             # Remove base64 header
-            cropped_img = cropped_img.split(",")[1]
+            if ',' in cropped_img:
+                cropped_img = cropped_img.split(",")[1]
 
-            # Save in DB
-            patient.scan_image = cropped_img
+            # Get existing images
+            images_list = patient.get_images()
+            
+            # Update specific image or add new
+            if image_index < len(images_list):
+                images_list[image_index] = cropped_img
+            else:
+                images_list.append(cropped_img)
+            
+            # Save back as JSON
+            patient.set_images(images_list)
             patient.save()
 
             return JsonResponse({"status": "success"})

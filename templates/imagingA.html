@@ -174,6 +174,13 @@ body {
     transition: margin-left 0.3s ease;
 }
 
+/* Ensure nav3 doesn't overlap footer on mobile */
+@media (max-width: 768px) {
+    .nav3 {
+        margin-bottom: 50px;
+    }
+}
+
 .nav3 table {
     width: 100%;
     border-collapse: collapse;
@@ -213,93 +220,548 @@ body {
 
 /* 📱 RESPONSIVE DESIGN */
 
-/* TABLE + FILTERS FOR TABLETS */
-@media (max-width: 992px) {
-    .nav2 {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
+/* ========== TABLET (768px - 992px) ========== */
+@media (max-width: 992px) and (min-width: 769px) {
+    .top-navbar span {
+        font-size: 1rem;
+        margin-left: 10px;
     }
+    
+    .top-navbar span[style*="margin-left: 900px"] {
+        margin-left: auto !important;
+    }
+
+    .nav2 {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+    }
+
     .nav3 {
         margin-left: 0px;
         width: 100%;
     }
+
+    .nav3 table {
+        font-size: 12px;
+    }
+
+    .nav3 th,
+    .nav3 td {
+        padding: 7px;
+    }
+
+    .modal {
+        width: 90%;
+        max-width: 600px;
+    }
+
+    .date-chip-box {
+        flex-wrap: wrap;
+    }
 }
 
-/* TABLE + FILTERS FOR MOBILE */
-@media (max-width: 768px) {
+/* ========== MOBILE (481px - 768px) ========== */
+@media (max-width: 768px) and (min-width: 481px) {
+    .top-navbar {
+        padding: 0 10px;
+        height: 50px;
+    }
+
+    .top-navbar img {
+        height: 35px;
+    }
+
     .top-navbar span {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        margin-left: 8px;
+    }
+
+    .top-navbar span[style*="margin-left: 900px"] {
+        margin-left: auto !important;
+        font-size: 12px !important;
     }
 
     .nav2 {
         flex-direction: column;
         gap: 10px;
-        align-items: stretch !important;
+        align-items: stretch;
+        padding: 12px;
+        margin-top: 50px;
     }
 
     .nav2 > * {
-        width: 100% !important;
+        width: 100%;
     }
 
-    #searchInput {
-        width: 100% !important;
-        padding: 8px 40px 8px 12px !important;
-        font-size: 12px;
+    .add-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
     }
 
-    .nav2 i.fa-search {
-        right: 12px !important;
+    #statusFilter {
+        width: 100%;
+        padding: 8px;
+        text-align: center;
     }
 
-    .nav3 table {
-        font-size: 11px;
-        min-width: 850px;
-    }
-
-    .nav3 th,
-    .nav3 td {
+    .date-chip-box {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
         padding: 6px;
     }
-}
 
-/* MOBILE SMALL SCREEN FIX */
-@media (max-width: 480px) {
-    .top-navbar {
-        justify-content: space-between;
-        padding: 0 10px;
+    .chip {
+        padding: 4px 8px;
+        font-size: 11px;
     }
 
-    .top-navbar span {
-        display: none;
-    }
-
-    .nav2 {
-        padding: 8px;
-        margin-left: 0;
+    #dayChip {
+        width: auto;
+        padding: 4px 8px !important;
     }
 
     .nav3 {
         margin-left: 0;
+        top: auto;
+        position: relative;
+        margin-top: 0;
     }
 
+    .nav3 table {
+        font-size: 11px;
+        min-width: 800px;
+    }
+
+    .nav3 th,
+    .nav3 td {
+        padding: 6px 4px;
+    }
+
+    .modal {
+        width: 95%;
+        max-width: 500px;
+        height: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-header {
+        height: 45px;
+    }
+
+    .modal-header h2 {
+        font-size: 16px;
+    }
+
+    .patient-form {
+        padding: 12px;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .field {
+        width: 100%;
+    }
+
+    .field input,
+    .field select {
+        width: 100% !important;
+    }
+
+    .field input[style*="width:158%"],
+    .field input[style*="width: 50%"],
+    .field input[style*="width: 87%"],
+    .field input[style*="width: 165%"],
+    .field input[style*="width: 92%"],
+    .field select[style*="width: 70%"] {
+        width: 100% !important;
+    }
+
+    .gender-box {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    .gender {
+        max-width: 100%;
+    }
+
+    .bottom-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .upload-box {
+        width: 100%;
+        text-align: center;
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .submit-btn {
+        width: 100%;
+        margin-bottom: 0 !important;
+    }
+
+    #footerPagination {
+        padding: 0 10px;
+        font-size: 11px;
+        height: 40px;
+    }
+
+    #footerPagination button {
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+
+    #footerPagination select {
+        padding: 3px 5px;
+        font-size: 11px;
+    }
+
+    .toggle-btn {
+        display: none;
+    }
+}
+
+/* ========== MOBILE SMALL (up to 480px) ========== */
+@media (max-width: 480px) {
+    .top-navbar {
+        justify-content: space-between;
+        padding: 0 8px;
+        height: 50px;
+    }
+
+    .top-navbar img {
+        height: 30px;
+    }
+
+    .top-navbar span:first-of-type {
+        font-size: 0.85rem;
+        margin-left: 6px;
+    }
+
+    .top-navbar span[style*="margin-left: 900px"] {
+        display: none !important;
+    }
+
+    .top-navbar a[href*="logout"] {
+        margin-left: auto;
+    }
+
+    .nav2 {
+        padding: 10px 8px;
+        margin-top: 50px;
+        gap: 8px;
+    }
+
+    .add-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    #statusFilter {
+        width: 100%;
+        padding: 8px 6px;
+        font-size: 11px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    #statusFilter span {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .date-chip-box {
+        width: 100%;
+        padding: 6px 4px;
+        font-size: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .chip {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
+
+    .calendar-icon {
+        padding: 4px;
+    }
+
+    #dayChip {
+        width: auto;
+        padding: 4px 8px !important;
+        font-size: 10px;
+    }
+
+    .nav3 {
+        margin-left: 0;
+        margin-top: 0;
+        position: relative;
+        padding: 4px;
+    }
+
+    .nav3 table {
+        font-size: 10px;
+        min-width: 700px;
+    }
+
+    .nav3 th,
+    .nav3 td {
+        padding: 5px 3px;
+        font-size: 10px;
+    }
+
+    .nav3 th {
+        font-size: 10px;
+        padding: 6px 4px;
+    }
+
+    /* Hide less important columns on mobile */
     th:nth-child(6), td:nth-child(6),
     th:nth-child(9), td:nth-child(9) {
         display: none;
     }
 
-    td strong,
-    td small {
+    td strong {
         font-size: 11px;
+        display: block;
     }
 
-    td {
-        padding: 4px !important;
+    td small {
+        font-size: 9px;
     }
 
-    #statusFilter span {
+    .status {
+        font-size: 10px;
+        padding: 2px 6px;
+    }
+
+    .modal {
+        width: 98%;
+        max-width: 100%;
+        margin: 10px auto;
+        height: auto;
+        max-height: 95vh;
+        overflow-y: auto;
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        height: 40px;
+        padding: 0 10px;
+    }
+
+    .modal-header h2 {
+        font-size: 14px;
+    }
+
+    .modal-header span[onclick*="closePatientPopup"] {
+        right: 8px !important;
+        top: 4px !important;
+        font-size: 20px !important;
+    }
+
+    .patient-form {
+        padding: 10px;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .field {
+        width: 100%;
+    }
+
+    .field label {
         font-size: 12px;
-        padding: 4px;
+        margin-bottom: 3px;
+    }
+
+    .field input,
+    .field select {
+        width: 100% !important;
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .field input[style*="width:158%"],
+    .field input[style*="width: 50%"],
+    .field input[style*="width: 87%"],
+    .field input[style*="width: 165%"],
+    .field input[style*="width: 92%"],
+    .field select[style*="width: 70%"] {
+        width: 100% !important;
+    }
+
+    .field[style*="margin-left: 110px"],
+    .field[style*="margin-left: -50px"],
+    .field[style*="margin-right: 120px"],
+    .field[style*="margin-right: 0px"] {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .gender {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .gender-box {
+        margin-left: 0 !important;
+        width: 100%;
+        height: 40px;
+    }
+
+    .gender-box span {
+        line-height: 40px;
+    }
+
+    .bottom-row {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .upload-box {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
+        font-size: 13px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 14px;
+        margin-bottom: 0 !important;
+        margin-top: 0;
+    }
+
+    #selectedImagesPreview {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 8px;
+    }
+
+    #imagesList {
+        gap: 6px;
+    }
+
+    #imagesList > div {
+        width: 70px !important;
+        height: 70px !important;
+    }
+
+    #cropEditor > div {
+        width: 95%;
+        padding: 12px;
+    }
+
+    #cropEditor > div > div:first-child {
+        height: 60vh;
+    }
+
+    #footerPagination {
+        padding: 0 8px;
+        font-size: 10px;
+        height: 40px;
+        flex-wrap: wrap;
+    }
+
+    .footer-center {
+        gap: 4px;
+    }
+
+    #footerPagination button {
+        padding: 4px 6px;
+        font-size: 10px;
+    }
+
+    #footerPagination select {
+        padding: 3px 5px;
+        font-size: 10px;
+    }
+
+    #pageSummary,
+    #displaySummary {
+        font-size: 10px;
+    }
+
+    .toggle-btn {
+        display: none;
+    }
+
+    .history-tooltip .history-popup {
+        min-width: 200px;
+        max-width: 280px;
+        font-size: 11px;
+        padding: 8px 10px;
+    }
+
+    /* Search input styling */
+    #searchInput {
+        width: 100% !important;
+        padding: 10px 35px 10px 12px !important;
+        font-size: 13px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+    }
+
+    /* Scan type filter button */
+    .nav2 button[style*="padding: 6px"] {
+        width: 100%;
+        padding: 10px !important;
+        font-size: 12px;
+    }
+
+    .scan-option {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+}
+
+/* ========== Additional responsive fixes ========== */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 60px;
+    }
+
+    /* Patient popup overlay adjustments */
+    #patientPopupOverlay {
+        padding: 10px;
+    }
+
+    /* Search input wrapper */
+    #searchInput {
+        width: 100% !important;
+        padding: 10px 35px 10px 12px !important;
+        font-size: 13px;
+        border-radius: 6px;
+        margin-bottom: 0;
+    }
+
+    /* Make scan type filter responsive */
+    .nav2 button[style*="padding: 6px"] {
+        width: 100%;
+        padding: 10px !important;
+        font-size: 12px;
     }
 }
 
@@ -345,116 +807,16 @@ tr.status-draft { background-color: #fef9e7 !important; }
 }
 
 
-/* ======= MOBILE UI BEAUTIFICATION ======= */
-@media (max-width: 480px) {
-
-    body {
-        background: #eef3f8;
-        padding: 0 6px;
-    }
-
-    /* Top section & Add New button */
-    #nav2 {
-        background: white;
-        border-radius: 10px;
-        padding: 12px;
-        gap: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        width: 100%;
-    }
-
-    /* Add New button full width */
-    #nav2 button:first-child {
-        width: 100%;
-        padding: 10px;
-        border-radius: 6px;
-        font-size: 14px;
-    }
-
-    /* Search box styling */
-    #searchInput {
-        width: 100% !important;
-        padding: 10px 40px 10px 12px !important;
-        border-radius: 8px !important;
-        border: 1px solid #ccc !important;
-        background: #fafafa;
-        font-size: 14px;
-    }
-    .nav2 i.fa-search {
-        right: 15px !important;
-    }
-
-    /* Status filter bar */
-    #statusFilter {
-        width: 100%;
-        padding: 8px 10px;
-        border-radius: 8px;
-        border: 1px solid #ddd;
-        background: #fafafa;
-        text-align: center;
-        
-    }
-
-    #statusFilter span {
-        padding: 4px 6px;
-        border-radius: 4px;
-    }
-
-    /* Scan filter chip bar */
-    .nav2 button:nth-child(4) {
-        width: 100%;
-        border-radius: 8px;
-        padding: 8px;
-        background: #eef6ff !important;
-        border: 1px solid #c8defd !important;
-    }
-
-    /* Date Filter button full width */
-    .date-filter button {
-        width: 100%;
-        border-radius: 8px;
-        padding: 8px;
-        background: #eef6ff;
-        border: 1px solid #c8defd;
-    }
-
-    /* TABLE container card */
-    #nav3 {
-        margin-top: 12px;
-        background: white;
-        border-radius: 10px;
-        padding: 6px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        width: 100%;
-    }
-
-    table {
-        min-width: 750px; /* prevents squeezing */
-    }
-
-    td strong {
-        font-size: 13px;
-    }
-    td small {
-        font-size: 11px;
-    }
-
-    /* Extra clean spacing */
-    .nav2 > * {
-        margin-bottom: 5px;
-    }
-}
 #nav3 {
     position: fixed;
     top: 110px;     /* nav2 height (approx 95px) */
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 50px;   /* footer height */
     overflow-y: auto;
     overflow-x: auto;
     background: white;
     padding: 0 5px;
-    max-height: auto;
 }
 
 
@@ -598,9 +960,28 @@ tr.status-draft { background-color: #fef9e7 !important; }
   background: #fff;
   margin: 40px auto;
   border-radius: 14px;
-  height: 350px;
-  overflow: hidden;
+  height: auto;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+/* Responsive modal */
+@media (max-width: 768px) {
+    .modal {
+        width: 95%;
+        max-width: 500px;
+        margin: 20px auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        width: 98%;
+        max-width: 100%;
+        margin: 10px auto;
+        max-height: 95vh;
+    }
 }
 /* Chrome, Edge, Safari */
 input[type=number]::-webkit-inner-spin-button,
@@ -850,13 +1231,19 @@ input[type=number] {
         <input style="width: 92%;" id="pop_refBy" type="text" placeholder="Doctor name">
       </div>
       <label style="margin-right: 50px; margin-bottom: -13px; padding:6px;" class="upload-box">
-        <input type="file" id="pop_uploadScan" required      hidden accept="image/*">
-        ⬆ Upload Scan
+        <input type="file" id="pop_uploadScan" required hidden accept="image/*" multiple>
+        ⬆ Upload Scan (Multiple)
       </label>
 
       
 
       <button style="padding: 10px 28px; margin-bottom: -12px;" class="submit-btn">Submit</button>
+    </div>
+    
+    <!-- Selected Images Preview -->
+    <div id="selectedImagesPreview" style="display:none; margin-top:10px; padding:10px; background:#f5f5f5; border-radius:8px; margin-left:20px; margin-right:20px;">
+        <div style="font-weight:600; margin-bottom:8px; color:#333;">Selected Images (Click to crop):</div>
+        <div id="imagesList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
     </div>
     
 <img id="pop_preview" style="display:none;">
@@ -1715,12 +2102,21 @@ function prevPage() {
 }
 
 let cropper;
+// Multiple images array
+let selectedImages = [];
+let currentCropIndex = -1;
 
 /* OPEN / CLOSE POPUP */
 function openPatientPopup() {
     document.getElementById("patientPopupOverlay").style.display = "flex";
     document.getElementById("pop_gender").value = "M"; // default
     document.getElementById("pop_scanType").value = "X-RAY";
+    // Reset images
+    selectedImages = [];
+    currentCropIndex = -1;
+    document.getElementById("selectedImagesPreview").style.display = "none";
+    document.getElementById("imagesList").innerHTML = "";
+    document.getElementById("pop_uploadScan").value = "";
 }
 
 function closePatientPopup() {
@@ -1742,28 +2138,85 @@ document.querySelectorAll(".gender-btn").forEach(btn => {
     };
 });
 
-/* IMAGE UPLOAD */
+/* IMAGE UPLOAD - MULTIPLE */
 document.getElementById("pop_uploadScan").addEventListener("change", function () {
-    const file = this.files[0];
-    if (!file) return;
+    const files = Array.from(this.files);
+    if (files.length === 0) return;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        document.getElementById("cropImage").src = e.target.result;
-        document.getElementById("cropEditor").style.display = "flex";
+    // Show preview container
+    document.getElementById("selectedImagesPreview").style.display = "block";
+    const imagesList = document.getElementById("imagesList");
+    imagesList.innerHTML = "";
 
-        if (cropper) cropper.destroy();
-        cropper = new Cropper(cropImage, { viewMode: 1, autoCropArea: 1 });
-    };
-    reader.readAsDataURL(file);
+    // Process each file
+    files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            // Add to array
+            const imageData = {
+                index: selectedImages.length,
+                base64: e.target.result,
+                cropped: null
+            };
+            selectedImages.push(imageData);
+
+            // Create thumbnail preview
+            const thumbDiv = document.createElement("div");
+            thumbDiv.style.cssText = "position:relative; width:80px; height:80px; border:2px solid #ddd; border-radius:6px; overflow:hidden; cursor:pointer; background:#fff;";
+            thumbDiv.innerHTML = `
+                <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
+                <div style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.7); color:white; padding:2px 6px; border-radius:4px; font-size:10px; font-weight:600;">${selectedImages.length}</div>
+            `;
+            
+            // Click to crop this image
+            thumbDiv.onclick = () => {
+                currentCropIndex = selectedImages.length - 1;
+                document.getElementById("cropImage").src = e.target.result;
+                document.getElementById("cropEditor").style.display = "flex";
+                
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(cropImage, { viewMode: 1, autoCropArea: 1 });
+            };
+            
+            imagesList.appendChild(thumbDiv);
+        };
+        reader.readAsDataURL(file);
+    });
 });
 
-/* CROP DONE */
+/* CROP DONE - Update specific image */
 function finishCrop() {
+    if (currentCropIndex === -1 || !cropper) return;
+    
     const canvas = cropper.getCroppedCanvas();
     const base64 = canvas.toDataURL("image/jpeg", 0.7);
-    document.getElementById("pop_finalImage").src = base64;
+    
+    // Update the specific image in array
+    selectedImages[currentCropIndex].cropped = base64;
+    selectedImages[currentCropIndex].base64 = base64;
+    
+    // Update thumbnail
+    const thumbs = document.querySelectorAll("#imagesList > div");
+    if (thumbs[currentCropIndex]) {
+        thumbs[currentCropIndex].querySelector("img").src = base64;
+    }
+    
     document.getElementById("cropEditor").style.display = "none";
+    currentCropIndex = -1;
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+}
+
+/* CLOSE CROPPER */
+function closeCropper() {
+    document.getElementById("cropEditor").style.display = "none";
+    currentCropIndex = -1;
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
 }
 
 /* CSRF */
@@ -1776,12 +2229,27 @@ function getCookie(name) {
     return cookieValue;
 }
 
-/* SUBMIT */
+/* SUBMIT - Send multiple images */
 document.getElementById("patientPopupForm").addEventListener("submit", function(e){
     e.preventDefault();
 
+    if (selectedImages.length === 0) {
+        alert("Please select at least one image");
+        return;
+    }
+
     let pid = pop_patientId.value.trim();
     if (!pid) pid = newPatientId();
+
+    // Get all images (use cropped if available, else original)
+    const imagesArray = selectedImages.map(img => {
+        const imgData = img.cropped || img.base64;
+        // Remove data:image prefix if present
+        if (imgData.includes(',')) {
+            return imgData.split(',')[1];
+        }
+        return imgData;
+    });
 
     const data = {
         patient_id: pid,
@@ -1792,7 +2260,7 @@ document.getElementById("patientPopupForm").addEventListener("submit", function(
         scanType: pop_scanType.value,
         bodyPart: pop_bodyPart.value,
         refBy: pop_refBy.value,
-        scan: pop_finalImage.src,
+        scan: imagesArray,  // Send array instead of single image
         center: pop_center.value
     };
 

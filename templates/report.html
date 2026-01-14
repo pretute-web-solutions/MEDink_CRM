@@ -11,6 +11,9 @@
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@300;400;600;700&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -83,16 +86,58 @@ body {
     width: 50%;
     background: black !important;
     display: flex;
+    position: relative;
+}
+
+/* SIDEBAR FOR THUMBNAILS */
+.image-sidebar {
+    width: 60px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-right: 2px solid #333;
+}
+
+/* Sidebar scrollbar styling */
+.image-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.image-sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.image-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.image-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* MAIN IMAGE CONTAINER */
+.image-container {
+    flex: 1;
+    display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
+    overflow: hidden;
 }
 
 #xrayImage {
     max-width: 100%;
     max-height: 100%;
+    width: auto;
+    height: auto;
     object-fit: contain;
     background: black !important;
+    display: block;
 }
 
 /* Fix cropper BG always black */
@@ -161,6 +206,204 @@ body {
     min-height: 400px;
 }
 
+/* Custom Font Families */
+.ql-font-arial {
+    font-family: Arial, sans-serif;
+}
+
+.ql-font-calibri {
+    font-family: 'Calibri', sans-serif;
+}
+
+.ql-font-times-new-roman {
+    font-family: 'Times New Roman', serif;
+}
+
+.ql-font-courier-new {
+    font-family: 'Courier New', monospace;
+}
+
+.ql-font-georgia {
+    font-family: Georgia, serif;
+}
+
+.ql-font-verdana {
+    font-family: Verdana, sans-serif;
+}
+
+.ql-font-tahoma {
+    font-family: Tahoma, sans-serif;
+}
+
+.ql-font-comic-sans {
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.ql-font-impact {
+    font-family: Impact, fantasy;
+}
+
+.ql-font-helvetica {
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.ql-font-garamond {
+    font-family: Garamond, serif;
+}
+
+.ql-font-trebuchet {
+    font-family: 'Trebuchet MS', sans-serif;
+}
+
+.ql-font-palatino {
+    font-family: Palatino, serif;
+}
+
+.ql-font-roboto {
+    font-family: 'Roboto', sans-serif;
+}
+
+.ql-font-open-sans {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.ql-font-lato {
+    font-family: 'Lato', sans-serif;
+}
+
+.ql-font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.ql-font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+.ql-font-ubuntu {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+/* Improve font dropdown display */
+.ql-picker-label[data-label]::before,
+.ql-picker-item[data-label]::before {
+    content: attr(data-label);
+}
+
+/* Font dropdown styling */
+.ql-picker.ql-font .ql-picker-label[data-value="arial"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="arial"]::before {
+    content: 'Arial';
+    font-family: Arial, sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="calibri"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="calibri"]::before {
+    content: 'Calibri';
+    font-family: 'Calibri', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="times-new-roman"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="times-new-roman"]::before {
+    content: 'Times New Roman';
+    font-family: 'Times New Roman', serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="courier-new"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="courier-new"]::before {
+    content: 'Courier New';
+    font-family: 'Courier New', monospace;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="georgia"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="georgia"]::before {
+    content: 'Georgia';
+    font-family: Georgia, serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="verdana"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="verdana"]::before {
+    content: 'Verdana';
+    font-family: Verdana, sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="tahoma"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="tahoma"]::before {
+    content: 'Tahoma';
+    font-family: Tahoma, sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="comic-sans"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="comic-sans"]::before {
+    content: 'Comic Sans MS';
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="impact"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="impact"]::before {
+    content: 'Impact';
+    font-family: Impact, fantasy;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="helvetica"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="helvetica"]::before {
+    content: 'Helvetica';
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="garamond"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="garamond"]::before {
+    content: 'Garamond';
+    font-family: Garamond, serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="trebuchet"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="trebuchet"]::before {
+    content: 'Trebuchet MS';
+    font-family: 'Trebuchet MS', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="palatino"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="palatino"]::before {
+    content: 'Palatino';
+    font-family: Palatino, serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="roboto"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="roboto"]::before {
+    content: 'Roboto';
+    font-family: 'Roboto', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="open-sans"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="open-sans"]::before {
+    content: 'Open Sans';
+    font-family: 'Open Sans', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="lato"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="lato"]::before {
+    content: 'Lato';
+    font-family: 'Lato', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="montserrat"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="montserrat"]::before {
+    content: 'Montserrat';
+    font-family: 'Montserrat', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="poppins"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="poppins"]::before {
+    content: 'Poppins';
+    font-family: 'Poppins', sans-serif;
+}
+
+.ql-picker.ql-font .ql-picker-label[data-value="ubuntu"]::before,
+.ql-picker.ql-font .ql-picker-item[data-value="ubuntu"]::before {
+    content: 'Ubuntu';
+    font-family: 'Ubuntu', sans-serif;
+}
+
 /* Report buttons */
 .report-btn {
     background: white;
@@ -209,10 +452,19 @@ body {
     z-index: 99999 !important;
 }
 
+.fullscreen .image-sidebar {
+    display: none !important;
+}
+
+.fullscreen .image-container {
+    width: 100% !important;
+}
+
 /* ――――― MOBILE + TABLET ――――― */
 @media (max-width: 992px) {     /* Tablet */
     .main { flex-direction: column; }
-    .left-panel { width: 100%; height: 55vh; }
+    .left-panel { width: 100%; height: 55vh; flex-direction: row; }
+    .image-sidebar { width: 50px; padding: 8px 4px; }
     .right-panel { width: 100%; height: 45vh; }
 }
 
@@ -220,6 +472,7 @@ body {
     .header { font-size: 12px; padding: 8px; gap: 10px; }
     .zoom-bar { bottom: 20px; gap: 12px; }
     .zoom-btn { font-size: 17px; }
+    .image-sidebar { width: 40px; padding: 6px 3px; gap: 6px; }
 }
 /* CROP BOX BORDER WHITE */
 .cropper-view-box {
@@ -277,35 +530,39 @@ body {
 
     <!-- LEFT: PACS VIEWER -->
     <div class="left-panel" id="leftPanel">
-        <img id="xrayImage" src="data:image/jpeg;base64,{{ patient.scan_image }}">
-<!-- CROP CONFIRM OVERLAY -->
-<div id="cropConfirm" 
-     style="
-        position:absolute; 
-        bottom:80px; 
-        left:50%; 
-        transform:translateX(-50%);
-        display:none; 
-        gap: 220px;
-        /* background:rgba(0,0,0,0.7);  */
-        padding:10px 25px; 
-        border-radius:10px;
-        z-index:9999;
-     ">
-     <button id="cropCancel" style="padding:7px 16px; background:#dc3545; color:white; border:none; border-radius:6px; font-weight:600;">Cancel</button>
+        <!-- SIDEBAR FOR THUMBNAILS -->
+        <div class="image-sidebar" id="thumbnailGallery">
+            <!-- Thumbnails will be inserted here -->
+        </div>
 
-    <button id="cropOk" style="padding:7px 16px; background:#28a745; color:white; border:none; border-radius:6px; font-weight:600;">Done</button>
-    </div>
-
-        <div class="zoom-bar">
-            <i class="fas fa-expand-arrows-alt zoom-btn" id="fullscreen"></i>
-            <i class="fas fa-search-minus zoom-btn" id="zoomOut"></i>
-            <i class="fas fa-search-plus zoom-btn" id="zoomIn"></i>
-            <i class="fa-solid fa-rotate-right zoom-btn" id="reset"></i>
-             
+        <!-- MAIN IMAGE CONTAINER -->
+        <div class="image-container">
+            <img id="xrayImage" src="data:image/jpeg;base64,{{ patient.scan_image }}">
             
-            <i style="color: white; cursor: pointer;" class="fas fa-expand zoom-btn"  id="cropBtn"></i>
+            <!-- CROP CONFIRM OVERLAY -->
+            <div id="cropConfirm" 
+                 style="
+                    position:absolute; 
+                    bottom:80px; 
+                    left:50%; 
+                    transform:translateX(-50%);
+                    display:none; 
+                    gap: 220px;
+                    padding:10px 25px; 
+                    border-radius:10px;
+                    z-index:9999;
+                 ">
+                 <button id="cropCancel" style="padding:7px 16px; background:#dc3545; color:white; border:none; border-radius:6px; font-weight:600;">Cancel</button>
+                <button id="cropOk" style="padding:7px 16px; background:#28a745; color:white; border:none; border-radius:6px; font-weight:600;">Done</button>
+            </div>
 
+            <div class="zoom-bar">
+                <i class="fas fa-expand-arrows-alt zoom-btn" id="fullscreen"></i>
+                <i class="fas fa-search-minus zoom-btn" id="zoomOut"></i>
+                <i class="fas fa-search-plus zoom-btn" id="zoomIn"></i>
+                <i class="fa-solid fa-rotate-right zoom-btn" id="reset"></i>
+                <i style="color: white; cursor: pointer;" class="fas fa-expand zoom-btn"  id="cropBtn"></i>
+            </div>
         </div>
     </div>
 
@@ -333,28 +590,162 @@ var quill;
 var reports = [];
 var currentReportId = null;
 var currentIndex = -1;
+// Multiple images support
+let patientImages = [];
+let currentImageIndex = 0;
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Define custom font families with proper display names
+    var Font = Quill.import('formats/font');
+    Font.whitelist = [
+        'arial', 'calibri', 'times-new-roman', 'courier-new', 
+        'georgia', 'verdana', 'tahoma', 'comic-sans', 'impact',
+        'helvetica', 'garamond', 'trebuchet', 'palatino', 'roboto',
+        'open-sans', 'lato', 'montserrat', 'poppins', 'ubuntu'
+    ];
+    Quill.register(Font, true);
+    
+    // Define custom font sizes with readable labels
+    var Size = Quill.import('formats/size');
+    Size.whitelist = ['8px', '9px', '10px', '11px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '72px'];
+    Quill.register(Size, true);
+    
     quill = new Quill('#editor', {
         theme: 'snow',
         modules: {
-            toolbar: [
-                [{ 'font': [] }],
-                [{ 'size': ['small', false, 'large', 'huge'] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'script': 'sub'}, { 'script': 'super' }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'indent': '-1'}, { 'indent': '+1' }],
-                [{ 'align': [] }],
-                ['blockquote', 'code-block'],
-                ['link', 'image'],
-                ['clean']
-            ]
+            toolbar: {
+                container: [
+                    [{ 'font': ['arial', 'calibri', 'times-new-roman', 'courier-new', 'georgia', 'verdana', 'tahoma', 'comic-sans', 'impact', 'helvetica', 'garamond', 'trebuchet', 'palatino', 'roboto', 'open-sans', 'lato', 'montserrat', 'poppins', 'ubuntu'] }],
+                    [{ 'size': ['8px', '9px', '10px', '11px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '72px'] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    'font': function(value) {
+                        if (value) {
+                            this.quill.format('font', value);
+                        } else {
+                            this.quill.format('font', false);
+                        }
+                    }
+                }
+            }
         }
+    });
+    
+    // Customize font dropdown labels with proper names
+    function updateFontLabels() {
+        var fontPicker = document.querySelector('.ql-picker.ql-font');
+        if (fontPicker) {
+            var fontItems = fontPicker.querySelectorAll('.ql-picker-item');
+            var fontLabel = fontPicker.querySelector('.ql-picker-label');
+            
+            var fontLabels = {
+                'arial': 'Arial',
+                'calibri': 'Calibri',
+                'times-new-roman': 'Times New Roman',
+                'courier-new': 'Courier New',
+                'georgia': 'Georgia',
+                'verdana': 'Verdana',
+                'tahoma': 'Tahoma',
+                'comic-sans': 'Comic Sans MS',
+                'impact': 'Impact',
+                'helvetica': 'Helvetica',
+                'garamond': 'Garamond',
+                'trebuchet': 'Trebuchet MS',
+                'palatino': 'Palatino',
+                'roboto': 'Roboto',
+                'open-sans': 'Open Sans',
+                'lato': 'Lato',
+                'montserrat': 'Montserrat',
+                'poppins': 'Poppins',
+                'ubuntu': 'Ubuntu'
+            };
+            
+            fontItems.forEach(function(item) {
+                var value = item.getAttribute('data-value');
+                if (value && fontLabels[value]) {
+                    item.textContent = fontLabels[value];
+                    item.style.fontFamily = fontLabels[value] + ', sans-serif';
+                }
+            });
+            
+            // Update label when font is selected
+            if (fontLabel) {
+                var currentValue = fontLabel.getAttribute('data-value');
+                if (currentValue && fontLabels[currentValue]) {
+                    fontLabel.textContent = fontLabels[currentValue];
+                }
+            }
+        }
+        
+        // Customize size dropdown labels
+        var sizePicker = document.querySelector('.ql-picker.ql-size');
+        if (sizePicker) {
+            var sizeItems = sizePicker.querySelectorAll('.ql-picker-item');
+            sizeItems.forEach(function(item) {
+                var value = item.getAttribute('data-value');
+                if (value) {
+                    item.textContent = value.toUpperCase();
+                }
+            });
+        }
+    }
+    
+    // Update labels after Quill initializes
+    setTimeout(updateFontLabels, 200);
+    
+    // Update labels when dropdown opens
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.ql-picker.ql-font') || e.target.closest('.ql-picker.ql-size')) {
+            setTimeout(updateFontLabels, 50);
+        }
+    });
+    
+    // Watch for font changes
+    quill.on('selection-change', function() {
+        setTimeout(updateFontLabels, 50);
     });
     var initialContent = "{{ patient.report|default_if_none:"" |escapejs }}";
     quill.root.innerHTML = initialContent;
     loadReports();
+    
+    // Load images from patient data
+    try {
+        const scanData = "{{ patient.scan_image|escapejs }}";
+        // Try to parse as JSON (multiple images)
+        try {
+            patientImages = JSON.parse(scanData);
+            if (!Array.isArray(patientImages)) {
+                // If not array, make it array
+                patientImages = [patientImages];
+            }
+        } catch(e) {
+            // Single image (backward compatibility)
+            if (scanData) {
+                patientImages = [scanData];
+            } else {
+                patientImages = [];
+            }
+        }
+    } catch(e) {
+        patientImages = [];
+    }
+
+    // Render thumbnail gallery
+    renderThumbnails();
+    
+    // Load first image
+    if (patientImages.length > 0) {
+        loadImage(0);
+    }
 });
 
 // GLOBAL
@@ -364,21 +755,144 @@ let cropMode = false;
 
 // INIT CROPPER
 function initCropper() {
-    cropper = new Cropper(image, {
-        viewMode: 1,
-        dragMode: cropMode ? "crop" : "move",
-        autoCrop: cropMode,
-        autoCropArea: cropMode ? 1 : 0,  // ⭐ full crop area
-        background: false,
-        movable: !cropMode,
-        scalable: false,
-        zoomable: true,
-        cropBoxMovable: true,
-        cropBoxResizable: true
+    const image = document.getElementById("xrayImage");
+    // Wait for image to load
+    if (image.complete) {
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(image, {
+            viewMode: 1,
+            dragMode: cropMode ? "crop" : "move",
+            autoCrop: cropMode,
+            autoCropArea: cropMode ? 1 : 0,  // ⭐ full crop area
+            background: false,
+            movable: !cropMode,
+            scalable: false,
+            zoomable: true,
+            cropBoxMovable: true,
+            cropBoxResizable: true
+        });
+    } else {
+        image.onload = function() {
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(image, {
+                viewMode: 1,
+                dragMode: cropMode ? "crop" : "move",
+                autoCrop: cropMode,
+                autoCropArea: cropMode ? 1 : 0,
+                background: false,
+                movable: !cropMode,
+                scalable: false,
+                zoomable: true,
+                cropBoxMovable: true,
+                cropBoxResizable: true
+            });
+        };
+    }
+}
+
+// Thumbnail gallery functions
+function renderThumbnails() {
+    const gallery = document.getElementById("thumbnailGallery");
+    if (!gallery) return;
+    
+    gallery.innerHTML = "";
+    
+    if (patientImages.length === 0) {
+        gallery.style.display = "none";
+        return;
+    }
+    
+    gallery.style.display = "flex";
+    
+    patientImages.forEach((img, index) => {
+        const thumb = document.createElement("div");
+        thumb.style.cssText = `
+            width: 100%;
+            aspect-ratio: 1;
+            border: 2px solid ${index === currentImageIndex ? '#007bff' : '#555'};
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #000;
+            transition: all 0.3s;
+            position: relative;
+            box-shadow: ${index === currentImageIndex ? '0 0 8px rgba(0,123,255,0.5)' : 'none'};
+        `;
+        thumb.onmouseover = () => {
+            if (index !== currentImageIndex) {
+                thumb.style.transform = "scale(1.05)";
+                thumb.style.borderColor = "#888";
+            }
+        };
+        thumb.onmouseout = () => {
+            if (index !== currentImageIndex) {
+                thumb.style.transform = "scale(1)";
+                thumb.style.borderColor = "#555";
+            }
+        };
+        
+        const imgEl = document.createElement("img");
+        imgEl.src = `data:image/jpeg;base64,${img}`;
+        imgEl.style.cssText = "width:100%; height:100%; object-fit:contain;";
+        imgEl.onerror = function() {
+            this.src = "data:image/jpeg;base64," + img;
+        };
+        
+        // Image number badge
+        const badge = document.createElement("div");
+        badge.style.cssText = `
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0,123,255,0.9);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            z-index: 10;
+        `;
+        badge.textContent = index + 1;
+        thumb.appendChild(badge);
+        
+        thumb.onclick = () => loadImage(index);
+        thumb.appendChild(imgEl);
+        gallery.appendChild(thumb);
     });
 }
 
-initCropper();
+function loadImage(index) {
+    if (index < 0 || index >= patientImages.length) return;
+    
+    currentImageIndex = index;
+    const image = document.getElementById("xrayImage");
+    
+    // Update image source
+    image.src = `data:image/jpeg;base64,${patientImages[index]}`;
+    
+    // Update cropper when image loads
+    image.onload = function() {
+        if (cropper) {
+            cropper.destroy();
+        }
+        initCropper();
+    };
+    
+    // If image already loaded
+    if (image.complete) {
+        image.onload();
+    }
+    
+    // Update thumbnail borders
+    renderThumbnails();
+}
+
+// Initialize cropper after page load
+setTimeout(() => {
+    if (patientImages.length > 0) {
+        initCropper();
+    }
+}, 500);
 
 
 // ⭐⭐⭐ CROP BUTTON CLICK
@@ -430,6 +944,16 @@ document.getElementById("cropOk").onclick = () => {
 
     // Show on screen
     image.src = croppedImage;
+    
+    // Update in patientImages array
+    if (currentImageIndex < patientImages.length) {
+        // Remove data:image prefix if present
+        let imgData = croppedImage;
+        if (imgData.includes(',')) {
+            imgData = imgData.split(',')[1];
+        }
+        patientImages[currentImageIndex] = imgData;
+    }
 
     // Save to backend
     fetch(`/api/patient/{{ patient.id }}/save-cropped-image/`, {
@@ -438,7 +962,14 @@ document.getElementById("cropOk").onclick = () => {
             "Content-Type": "application/json",
             "X-CSRFToken": getCookie("csrftoken"),
         },
-        body: JSON.stringify({ scan_image: croppedImage })
+        body: JSON.stringify({ 
+            scan_image: croppedImage,
+            image_index: currentImageIndex 
+        })
+    })
+    .then(() => {
+        // Update thumbnail
+        renderThumbnails();
     });
 
     cropMode = false;
@@ -453,12 +984,17 @@ document.getElementById("cropOk").onclick = () => {
 
 
 // FULLSCREEN
-document.getElementById("fullscreen").onclick = () => {
+function toggleFullscreen() {
     const panel = document.getElementById("leftPanel");
     panel.classList.toggle("fullscreen");
+    if (cropper) {
+        cropper.destroy();
+        initCropper();
+    }
+}
 
-    cropper.destroy();
-    initCropper();
+document.getElementById("fullscreen").onclick = () => {
+    toggleFullscreen();
 };
 
 
@@ -471,24 +1007,79 @@ document.getElementById("reset").onclick = () => cropper.reset();
 
 // SAVE REPORT
 function updateStatus(status){
-    if (!quill || !currentReportId) {
-        alert('No report selected');
+    if (!quill) {
+        alert('Editor not initialized');
         return;
     }
+    
+    // If no report selected, create a new one first
+    if (!currentReportId) {
+        // Create new report first
+        fetch(`/api/patient/{{ patient.id }}/reports/create/`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'X-CSRFToken': getCookie('csrftoken') 
+            },
+            body: JSON.stringify({ 
+                report_text: quill.root.innerHTML, 
+                status: status 
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Failed to create report');
+            }
+            return res.json();
+        })
+        .then(data => {
+            if (status === "FINAL") {
+                alert("Report submitted successfully!");
+                location.href = "/RADS/";
+            } else {
+                alert("Draft saved successfully!");
+                loadReports();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error: ' + error.message);
+        });
+        return;
+    }
+    
     const report = quill.root.innerHTML;
 
     fetch(`/api/report/${currentReportId}/update/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+        headers: { 
+            "Content-Type": "application/json", 
+            "X-CSRFToken": getCookie("csrftoken") 
+        },
         body: JSON.stringify({ report_text: report, status })
     })
-    .then(res => res.json())
-    .then(data => {
-        if(data.message === "Report updated"){
-            alert("Updated Successfully");
-            loadReports(); // Update list
-            if(status === "FINAL") location.href = "/RADS/";
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Failed to update report');
         }
+        return res.json();
+    })
+    .then(data => {
+        if(data.message === "Report updated" || data.status === "success"){
+            if(status === "FINAL") {
+                alert("Report submitted successfully!");
+                location.href = "/RADS/";
+            } else {
+                alert("Draft saved successfully!");
+                loadReports(); // Update list
+            }
+        } else {
+            alert("Response: " + (data.message || "Unknown response"));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting report: ' + error.message);
     });
 }
 
@@ -529,23 +1120,48 @@ function newReport() {
     fetch(`/api/patient/{{ patient.id }}/reports/create/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
-        body: JSON.stringify({ report_text: '', status: 'DRAFT' })
+        body: JSON.stringify({ report_text: quill ? quill.root.innerHTML : '', status: 'DRAFT' })
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Failed to create report');
+        }
+        return res.json();
+    })
     .then(data => {
         loadReports();
+    })
+    .catch(error => {
+        console.error('Error creating report:', error);
+        alert('Error creating report: ' + error.message);
     });
 }
 
 function loadReports() {
     fetch(`/api/patient/{{ patient.id }}/reports/`)
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Failed to load reports');
+        }
+        return res.json();
+    })
     .then(data => {
-        reports = data.reports;
+        reports = data.reports || [];
         updateSavedList();
         if (reports.length > 0) {
             loadReport(0);
+        } else {
+            // No reports exist, reset currentReportId
+            currentReportId = null;
+            currentIndex = -1;
         }
+    })
+    .catch(error => {
+        console.error('Error loading reports:', error);
+        reports = [];
+        currentReportId = null;
+        currentIndex = -1;
+        updateSavedList();
     });
 }
 

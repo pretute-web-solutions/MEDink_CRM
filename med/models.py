@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+import json
 
 class Patient(models.Model):
     center = models.CharField(max_length=100, null=True, blank=True)
@@ -36,6 +37,29 @@ class Patient(models.Model):
             now = datetime.now()
             self.patient_id = f"P{now.strftime('%Y%m%d%H%M%S')}"
         super(Patient, self).save(*args, **kwargs)
+    
+    # Helper method to get images as list
+    def get_images(self):
+        try:
+            if self.scan_image:
+                # Try to parse as JSON array
+                parsed = json.loads(self.scan_image)
+                if isinstance(parsed, list):
+                    return parsed
+                # If single string, return as list
+                return [parsed] if parsed else []
+            return []
+        except:
+            # Backward compatibility: if single image (old format)
+            return [self.scan_image] if self.scan_image else []
+    
+    # Helper method to set images
+    def set_images(self, images_list):
+        if isinstance(images_list, list):
+            self.scan_image = json.dumps(images_list)
+        else:
+            # Single image - convert to array
+            self.scan_image = json.dumps([images_list])
     
     class Meta:
         db_table = 'patients'
