@@ -512,14 +512,9 @@ document.addEventListener("keydown", function (event) {
     const panel = document.getElementById("leftPanel");
 
     if (event.key === "Escape" && panel.classList.contains("fullscreen")) {
-        toggleFullscreen();
-    }
-});
-
-// F key → toggle fullscreen
-document.addEventListener("keydown", function (event) {
-    if (event.key.toLowerCase() === "f") {
-        toggleFullscreen();
+        panel.classList.remove("fullscreen");
+        cropper.destroy();
+        initCropper();
     }
 });
 
