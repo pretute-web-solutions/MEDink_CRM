@@ -211,6 +211,30 @@ body {
     font-size: 1.1rem;
 }
 
+/* Search Icon Styles - Hidden by default, only show on mobile */
+#navbarSearchIcon {
+    display: none;
+    transition: opacity 0.3s ease;
+}
+
+#navbarSearchIcon:hover {
+    opacity: 0.7;
+}
+
+/* Logout Icon Styles */
+.top-navbar a[href*="logout"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: red;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.top-navbar a[href*="logout"]:hover {
+    opacity: 0.8;
+}
+
 /* 📑 SIDEBAR */
 .sidebar2 {
     position: fixed;
@@ -903,18 +927,39 @@ input[type=number] {
 <div class="top-navbar">
     <img height="40" style="border-radius: 30px;" src="data:image/png;base64,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" alt="Profile">
     
-    <span style="margin-left: 500px;" ></span>
+    <span style="margin-left: 100px;" ></span>
     <h3>Welcome, {{ user_name }} </h3>
     <label class="theme-switch">
   <input type="checkbox" id="themeToggle">
   <span class="slider"></span>
 </label>
 
-    <!-- 🔵 Only Profile Icon on Right -->
-    <div style="margin-left:auto; margin-right:20px; cursor:pointer;">
-        <i class="fa-solid fa-user-circle" 
-           style="font-size:30px; color:white;" id="profileIcon"></i>
-</div>
+    <!-- 🔵 Search, Logout and Profile Icons on Right -->
+    <div style="margin-left:auto; display:flex; align-items:center; gap:15px;">
+        <!-- Search Icon -->
+        <div style="cursor:pointer;" id="navbarSearchIcon" title="Search">
+            <i class="fas fa-search" style="font-size: 20px; color: white;"></i>
+        </div>
+
+        <!-- Logout Icon -->
+        <a href="{% url 'logout' %}" style="color: red; font-size: 24px; text-decoration: none;" title="Logout">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+
+        <!-- Profile Icon -->
+        <div style="cursor:pointer;">
+            <i class="fa-solid fa-user-circle"
+               style="font-size:30px; color:white;" id="profileIcon"></i>
+        </div>
+    </div>
+
+    <!-- 🔍 Navbar Search Input (Hidden by default) -->
+    <div id="navbarSearchContainer" style="display: none; position: absolute; top: 60px; right: 20px; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid #ddd; z-index: 1001;">
+        <input type="search" id="navbarSearchInput" placeholder="Search patients..."
+               style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 200px; font-size: 14px;">
+        <button onclick="performNavbarSearch()" style="margin-left: 8px; padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Search</button>
+    </div>
+
 <!-- Profile Dropdown Modal -->
 <div id="profileModal" style="
     position: fixed;
@@ -982,6 +1027,111 @@ body.dark-mode .profile-item:hover {
     border-color: #1055b6 !important;
 }
 
+/* 📱 MOBILE RESPONSIVE - Hide Sidebar */
+@media (max-width: 768px) {
+    .sidebar2 {
+        display: none !important;
+        width: 0 !important;
+        visibility: hidden !important;
+        overflow: hidden !important;
+    }
+
+    .toggle-btn {
+        display: none !important;
+    }
+
+    .nav2 {
+        left: 0 !important;
+    }
+
+    .nav3 {
+        left: 0 !important;
+        top: 90px !important; /* Adjust for smaller mobile navbar (45px) */
+        padding-bottom: 55px !important; /* Footer height 45px + some margin */
+    }
+
+    #patientTabs {
+        left: 0 !important;
+    }
+
+    /* Mobile navbar adjustments */
+    .top-navbar {
+        padding: 0 8px !important;
+        height: 45px !important;
+    }
+
+    .top-navbar img {
+        height: 30px !important;
+        width: 30px !important;
+    }
+
+    .top-navbar span {
+        font-size: 0.8rem !important;
+        margin-left: 8px !important;
+    }
+
+    /* Hide theme switch on mobile to make space */
+    .theme-switch {
+        display: none !important;
+    }
+
+    /* Reduce spacer on mobile */
+    .top-navbar span[style*="margin-left"] {
+        margin-left: 20px !important;
+    }
+
+    /* Ensure logout icon is visible on mobile */
+    .top-navbar a[href*="logout"] {
+        display: flex !important;
+        font-size: 16px !important;
+        color: red !important;
+        margin: 0 !important;
+    }
+
+    .top-navbar > div:last-child {
+        gap: 8px !important;
+        margin-right: 8px !important;
+    }
+
+    /* Hide profile icon on mobile */
+    .top-navbar #profileIcon {
+        display: none !important;
+    }
+
+    /* Mobile search adjustments */
+    #navbarSearchContainer {
+        top: 45px !important;
+        right: 8px !important;
+        left: 8px !important;
+        width: calc(100vw - 16px) !important;
+    }
+
+    #navbarSearchInput {
+        width: calc(100% - 80px) !important;
+    }
+
+    /* Show search icon only on mobile */
+    #navbarSearchIcon {
+        display: block !important;
+        font-size: 18px !important;
+    }
+
+    /* Hide original search input and icon from nav2 on mobile */
+    .nav2 #searchInput,
+    .nav2 a[href*=""] {
+        display: none !important;
+    }
+
+    /* Mobile logout and profile icons */
+    .top-navbar > div:last-child {
+        gap: 10px !important;
+    }
+
+    .top-navbar a[href*="logout"] {
+        font-size: 20px !important;
+    }
+}
+
 </style>
 <script>
 // Open / Close Dropdown
@@ -1011,6 +1161,52 @@ function openChangePass() {
 // Theme Toggle
 function toggleTheme() {
     document.getElementById("themeToggle").click();
+}
+
+// 🔍 Navbar Search Functionality
+document.getElementById("navbarSearchIcon").addEventListener("click", function() {
+    const searchContainer = document.getElementById("navbarSearchContainer");
+    const isVisible = searchContainer.style.display === "block";
+
+    if (isVisible) {
+        searchContainer.style.display = "none";
+    } else {
+        searchContainer.style.display = "block";
+        document.getElementById("navbarSearchInput").focus();
+    }
+});
+
+// Close search when clicking outside
+document.addEventListener("click", function(e) {
+    const searchContainer = document.getElementById("navbarSearchContainer");
+    const searchIcon = document.getElementById("navbarSearchIcon");
+
+    if (!searchContainer.contains(e.target) && e.target !== searchIcon && !searchIcon.contains(e.target)) {
+        searchContainer.style.display = "none";
+    }
+});
+
+// Real-time search as user types
+document.getElementById("navbarSearchInput").addEventListener("input", function(e) {
+    performNavbarSearch();
+});
+
+// Search on Enter key (optional - for manual search)
+document.getElementById("navbarSearchInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        // Close the search dropdown after search
+        document.getElementById("navbarSearchContainer").style.display = "none";
+    }
+});
+
+function performNavbarSearch() {
+    const searchTerm = document.getElementById("navbarSearchInput").value.trim();
+
+    // Use existing search input and trigger search (works even with empty string to clear search)
+    document.getElementById("searchInput").value = searchTerm;
+    applyFilters();
+
+    // Don't close dropdown automatically - let user close it manually or keep typing
 }
 </script>
 </div>
@@ -1555,7 +1751,7 @@ function saveEdit() {
             <tr data-entry-date="{{ patient.entry_time|date:'Y-m-d' }}"
             data-center="{{ patient.center }}" 
             data-rads="{% if patient.assigned_to %}{{ patient.assigned_to.name }}{% else %}NONE{% endif %}"
-           ondblclick="openReportWithTab('{{patient.id}}', '{{patient.name}}')"
+           onclick="handleRowClick('{{patient.id}}', '{{patient.name}}', event)"
  
                 style="cursor:pointer; background-color: {% if patient.status == 'FINAL' %}#{% elif patient.status == 'DRAFT' %}#{% else %}#{% endif %}">
                 
@@ -2452,6 +2648,38 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 }); // DOMContentLoaded end
+
+// Handle row clicks for both desktop and mobile
+let clickCount = 0;
+let clickTimer = null;
+
+function handleRowClick(patientId, patientName, event) {
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+
+    // Check if mobile device
+    const isMobile = window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // On mobile, single click opens report
+        openReportWithTab(patientId, patientName);
+    } else {
+        // On desktop, implement double-click behavior
+        clickCount++;
+
+        if (clickCount === 1) {
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+                // Single click - do nothing special
+            }, 300); // 300ms delay for double-click detection
+        } else if (clickCount === 2) {
+            clearTimeout(clickTimer);
+            clickCount = 0;
+            openReportWithTab(patientId, patientName);
+        }
+    }
+}
 
 function openReportWithTab(patientId, patientName) {
     let tabBar = document.getElementById("tabContainer");
