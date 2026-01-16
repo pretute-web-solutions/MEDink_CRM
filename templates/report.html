@@ -148,6 +148,78 @@ body {
     background-color: black !important;
 }
 
+/* Thumbnail wrapper for delete icon */
+.thumb-delete {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border-radius: 12px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 40;
+    font-size: 12px;
+}
+
+/* Delete icon on main image */
+.main-delete {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    z-index: 60;
+}
+
+/* cropper overlay background */
+.cropper-bg {
+    background-image: none !important;
+    background-color: rgba(0,0,0,0.95) !important;
+}
+
+/* Force all cropper layers to solid black (remove checkerboard) */
+.cropper-container,
+.cropper-wrap-box,
+.cropper-canvas,
+.cropper-view-box,
+.cropper-face,
+.cropper-bg,
+.cropper-bg::before,
+.cropper-bg::after {
+    background-image: none !important;
+    background-color: #000 !important;
+}
+
+/* Ensure the image element background is black */
+#xrayImage {
+    background-color: #000 !important;
+}
+
+/* Aggressive override: remove any checkerboard/transparent pattern inside Cropper */
+.cropper-container, .cropper-container *,
+.cropper-container *::before, .cropper-container *::after,
+.cropper-bg, .cropper-bg::before, .cropper-bg::after,
+.cropper-face, .cropper-face::before, .cropper-face::after,
+.cropper-canvas, .cropper-wrap-box, .cropper-view-box {
+    background-image: none !important;
+    background: #000 !important;
+    background-color: #000 !important;
+}
+
+/* canvas img may have transparent regions; ensure it's rendered over black */
+.cropper-canvas img,
+#xrayImage {
+    background-color: #000 !important;
+}
+
 /* ――――― ZOOM BAR ――――― */
 .zoom-bar {
     position: absolute;
@@ -538,6 +610,7 @@ body {
         <!-- MAIN IMAGE CONTAINER -->
         <div class="image-container">
             <img id="xrayImage" src="data:image/jpeg;base64,{{ patient.scan_image }}">
+            <div class="main-delete" id="deleteCurrentBtn" title="Delete current image" onclick="deleteCurrentImage()"><i class="fa fa-trash"></i></div>
             
             <!-- CROP CONFIRM OVERLAY -->
             <div id="cropConfirm" 
@@ -771,6 +844,10 @@ function initCropper() {
             cropBoxMovable: true,
             cropBoxResizable: true
         });
+        // Ensure any inline backgrounds/checkerboard are removed
+        setTimeout(fixCropperBg, 50);
+        // run aggressive fixer multiple times to catch late changes
+        for(let i=0;i<8;i++){ setTimeout(aggressiveFixCropper, 60 + i*120); }
     } else {
         image.onload = function() {
             if (cropper) cropper.destroy();
@@ -786,8 +863,62 @@ function initCropper() {
                 cropBoxMovable: true,
                 cropBoxResizable: true
             });
+            setTimeout(fixCropperBg, 50);
+            for(let i=0;i<8;i++){ setTimeout(aggressiveFixCropper, 60 + i*120); }
         };
     }
+}
+
+function fixCropperBg(){
+    try{
+        const selectors = ['.cropper-bg', '.cropper-wrap-box', '.cropper-canvas', '.cropper-view-box', '.cropper-face'];
+        selectors.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => {
+                el.style.backgroundImage = 'none';
+                el.style.background = '#000';
+                el.style.backgroundColor = '#000';
+            });
+        });
+
+        // Also set any canvas background to black
+        document.querySelectorAll('canvas').forEach(c => {
+            c.style.background = '#000';
+            c.style.backgroundColor = '#000';
+        });
+
+        // Ensure the image element itself has black background
+        const img = document.getElementById('xrayImage');
+        if(img) img.style.background = '#000';
+    }catch(e){
+        console.error('fixCropperBg error', e);
+    }
+}
+
+function aggressiveFixCropper(){
+    try{
+        const container = document.querySelector('.cropper-container');
+        if(!container) return;
+        // scan children and remove any background-image set either inline or via computed style
+        const nodes = container.querySelectorAll('*');
+        nodes.forEach(el => {
+            try{
+                const cs = window.getComputedStyle(el);
+                const bg = (cs && cs.backgroundImage) || '';
+                if(bg && bg !== 'none' && bg !== 'initial' && !bg.includes('linear-gradient')){
+                    el.style.setProperty('background-image', 'none', 'important');
+                    el.style.setProperty('background', '#000', 'important');
+                    el.style.setProperty('background-color', '#000', 'important');
+                }
+            }catch(e){}
+        });
+
+        // canvases and imgs
+        container.querySelectorAll('canvas, img').forEach(el => {
+            el.style.setProperty('background', '#000', 'important');
+            el.style.setProperty('background-color', '#000', 'important');
+            el.style.setProperty('background-image', 'none', 'important');
+        });
+    }catch(e){ console.error('aggressiveFixCropper', e); }
 }
 
 // Thumbnail gallery functions
@@ -855,11 +986,53 @@ function renderThumbnails() {
         badge.textContent = index + 1;
         thumb.appendChild(badge);
         
+        // delete overlay for thumbnail
+        const delBtn = document.createElement('div');
+        delBtn.className = 'thumb-delete';
+        delBtn.innerHTML = '<i class="fa fa-trash"></i>';
+        delBtn.title = 'Delete image';
+        delBtn.onclick = function(e) { e.stopPropagation(); if(confirm('Delete this image?')) deleteImage(index); };
+        thumb.appendChild(delBtn);
+
         thumb.onclick = () => loadImage(index);
         thumb.appendChild(imgEl);
         gallery.appendChild(thumb);
     });
 }
+
+// Delete image from gallery
+function deleteImage(index) {
+    if (index < 0 || index >= patientImages.length) return;
+    patientImages.splice(index, 1);
+    if (currentImageIndex >= patientImages.length) {
+        currentImageIndex = Math.max(0, patientImages.length - 1);
+    }
+    if (patientImages.length === 0) {
+        const image = document.getElementById('xrayImage');
+        image.src = '';
+        if (cropper) { cropper.destroy(); }
+    } else {
+        loadImage(currentImageIndex);
+    }
+    renderThumbnails();
+
+    // Persist deletion to backend so it doesn't reappear after refresh
+    try {
+        // send full images list; backend will strip headers if present
+        fetch(`/api/patient/{{ patient.id }}/save-images/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ images: patientImages })
+        }).then(res => {
+            if (!res.ok) console.error('Failed to persist images');
+        }).catch(err => console.error('Error saving images:', err));
+    } catch(e) { console.error(e); }
+}
+
+function deleteCurrentImage() { deleteImage(currentImageIndex); }
 
 function loadImage(index) {
     if (index < 0 || index >= patientImages.length) return;
@@ -904,11 +1077,13 @@ document.getElementById("cropBtn").onclick = () => {
 
     // FULL-SIZE CROP FRAME
     let box = cropper.getContainerData();
+    // Add small inset padding so the crop border/lines are visible at the top/edges
+    const pad = Math.max(12, Math.round(Math.min(box.width, box.height) * 0.015));
     cropper.setCropBoxData({
-        left: 0,
-        top: 0,
-        width: box.width,
-        height: box.height
+        left: (box.left || 0) + pad,
+        top: (box.top || 0) + pad,
+        width: Math.max(50, box.width - pad * 2),
+        height: Math.max(50, box.height - pad * 2)
     });
 
     // SHOW OK/CANCEL

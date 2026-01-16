@@ -1300,6 +1300,35 @@ def save_cropped_image(request, pk):
             return JsonResponse({"status": "error", "message": "Patient not found"})
 
 
+@csrf_exempt
+def save_images(request, pk):
+    """Replace the patient's scan images with provided list (persist deletions/updates).
+
+    Expects JSON: { images: ["<base64 or dataurl>", ...] }
+    """
+    if request.method == "POST":
+        try:
+            patient = Patient.objects.get(id=pk)
+            data = json.loads(request.body)
+            images = data.get('images', [])
+
+            cleaned = []
+            for img in images:
+                if not img:
+                    continue
+                if isinstance(img, str) and ',' in img:
+                    cleaned.append(img.split(',', 1)[1])
+                else:
+                    cleaned.append(img)
+
+            # Save back as JSON via model helper
+            patient.set_images(cleaned)
+            patient.save()
+            return JsonResponse({'status': 'success'})
+        except Patient.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Patient not found'})
+
+
 from django.http import JsonResponse
 from .models import UserAccount
 
