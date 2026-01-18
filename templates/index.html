@@ -2135,77 +2135,343 @@ function downloadReport(id, type, event) {
         });
 }
 
+// Function to strip HTML tags
+function stripHtmlTags(html) {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
+
 function generatePDF(patient) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    
-    // Add logo or header
-    doc.setFontSize(20);
-    doc.text('MEDINK REPORT', 105, 20, { align: 'center' });
-    
-    // Add patient details
-    doc.setFontSize(12);
-    doc.text('PATIENT DETAILS', 20, 40);
+
+    // Medical Letterhead Header
+    doc.setFillColor(240, 248, 255); // Light blue background
+    doc.rect(0, 0, 210, 35, 'F');
+
+    // Medical Cross Symbol
+    doc.setDrawColor(255, 0, 0); // Red color
+    doc.setLineWidth(2);
+    doc.line(15, 10, 25, 10); // Horizontal line
+    doc.line(20, 5, 20, 20);  // Vertical line
+
+    // Hospital Header
+    doc.setFontSize(16);
+    doc.setTextColor(0, 100, 0); // Dark green
+    doc.text('MEDINK DIAGNOSTIC CENTER', 35, 15);
+
     doc.setFontSize(10);
-    doc.text(`Patient ID: ${patient.patient_id}`, 20, 50);
-    doc.text(`Name: ${patient.name}`, 20, 60);
-    doc.text(`Age/Gender: ${patient.age}/${patient.gender}`, 20, 70);
-    doc.text(`Scan Type: ${patient.scan_type}`, 20, 80);
-    doc.text(`Body Part: ${patient.body_part}`, 20, 90);
-    doc.text(`Referred By: Dr. ${patient.ref_by}`, 20, 100);
-    
-    // Add report content
-    doc.setFontSize(12);
-    doc.text('REPORT', 20, 120);
+    doc.setTextColor(100, 100, 100); // Gray
+    doc.text('Advanced Medical Imaging & Radiology Services', 35, 22);
+    doc.text('Address: 123 Medical Plaza, City - 400001 | Phone: +91-1234567890', 35, 28);
+
+    // Reset text color
+    doc.setTextColor(0, 0, 0);
+
+    // Patient Details Section (removed header text)
+
+    // Draw single box for all patient details
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.8);
+    doc.rect(15, 35, 175, 35); // Single big box for all details - moved up
+
+    // Removed vertical divider line for cleaner look
+
+    // Add patient details text inside the single box - Left Column
     doc.setFontSize(10);
-    
-    const reportText = patient.report || 'No report available';
-    const splitReport = doc.splitTextToSize(reportText, 170);
-    doc.text(splitReport, 20, 130);
-    
+    doc.text(`Patient ID: ${patient.patient_id}`, 20, 45);
+    doc.text(`Name: ${patient.name}`, 20, 53);
+    doc.text(`Age/Gender: ${patient.age}/${patient.gender}`, 20, 61);
+
+    // Right Column
+    doc.text(`Scan Type: ${patient.scan_type}`, 110, 45);
+    doc.text(`Body Part: ${patient.body_part}`, 110, 53);
+    doc.text(`Referred By: Dr. ${patient.ref_by}`, 110, 61);
+
+    // Report Date and Time
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString() + ' ' + currentDate.toLocaleTimeString();
+    doc.text(`Report Date: ${formattedDate}`, 130, 40);
+
+    // Removed duplicate patient details section
+
+    // Clinical Findings Section
+    doc.setFontSize(12);
+    doc.setTextColor(255, 0, 0); // Red for findings
+    doc.text('CLINICAL FINDINGS', 20, 85);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+
+    // Draw findings box
+    doc.setDrawColor(220, 220, 220);
+    doc.setLineWidth(0.5);
+    doc.rect(15, 90, 175, 70);
+
+    const reportText = stripHtmlTags(patient.report) || 'No significant abnormalities detected.';
+    const splitReport = doc.splitTextToSize(reportText, 165);
+    doc.text(splitReport, 20, 100);
+
+    // Doctor Signature Section
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('Radiologist Signature: ___________________________', 20, 170);
+    doc.text('Date: _______________', 130, 170);
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('This is a computer generated report. Please consult your physician for clinical interpretation.', 20, 180);
+
+    // Medical disclaimer
+    doc.setFontSize(7);
+    doc.text('* This report is confidential and intended for medical professional use only.', 20, 185);
+
     doc.save(`MEDINK_Report_${patient.patient_id}.pdf`);
 }
 
 function generateWord(patient) {
-    const { Document, Paragraph, TextRun, HeadingLevel, Packer } = docx;
-    
+    const { Document, Paragraph, TextRun, HeadingLevel, Packer, Table, TableCell, TableRow, WidthType, BorderStyle, AlignmentType } = docx;
+
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString() + ' ' + currentDate.toLocaleTimeString();
+
     const doc = new Document({
         sections: [{
             properties: {},
             children: [
+                // Header with medical center info
                 new Paragraph({
-                    text: "MEDINK REPORT",
+                    children: [
+                        new TextRun({
+                            text: "🏥 MEDINK DIAGNOSTIC CENTER",
+                            size: 32, // 16pt
+                            bold: true,
+                            color: "006400" // Dark green
+                        })
+                    ],
+                    alignment: AlignmentType.CENTER
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({
+                            text: "Advanced Medical Imaging & Radiology Services",
+                            size: 20, // 10pt
+                            color: "666666"
+                        })
+                    ],
+                    alignment: AlignmentType.CENTER
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({
+                            text: "Address: 123 Medical Plaza, City - 400001 | Phone: +91-1234567890",
+                            size: 18, // 9pt
+                            color: "666666"
+                        })
+                    ],
+                    alignment: AlignmentType.CENTER
+                }),
+
+                // Report title
+                new Paragraph({
+                    text: "RADIOLOGY REPORT",
                     heading: HeadingLevel.HEADING_1,
-                    alignment: docx.AlignmentType.CENTER
+                    alignment: AlignmentType.CENTER,
+                    spacing: { after: 200 }
                 }),
+
+                // Date
                 new Paragraph({
-                    text: "PATIENT DETAILS",
-                    heading: HeadingLevel.HEADING_2
+                    children: [
+                        new TextRun({
+                            text: `Report Date: ${formattedDate}`,
+                            size: 20,
+                            color: "666666"
+                        })
+                    ],
+                    alignment: AlignmentType.RIGHT
                 }),
+                // Patient Information Section
                 new Paragraph({
-                    children: [new TextRun(`Patient ID: ${patient.patient_id}`)]
+                    children: [
+                        new TextRun({
+                            text: "PATIENT INFORMATION",
+                            size: 24, // 12pt
+                            bold: true,
+                            color: "000080" // Navy blue
+                        })
+                    ],
+                    spacing: { before: 200, after: 100 }
                 }),
-                new Paragraph({
-                    children: [new TextRun(`Name: ${patient.name}`)]
+                // Create table for patient details
+                new Table({
+                    width: {
+                        size: 100,
+                        type: WidthType.PERCENTAGE,
+                    },
+                    borders: {
+                        top: { style: BorderStyle.SINGLE, size: 2, color: "000000" },
+                        bottom: { style: BorderStyle.SINGLE, size: 2, color: "000000" },
+                        left: { style: BorderStyle.SINGLE, size: 2, color: "000000" },
+                        right: { style: BorderStyle.SINGLE, size: 2, color: "000000" },
+                        insideHorizontal: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+                        insideVertical: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" },
+                    },
+                    rows: [
+                        new TableRow({
+                            height: { value: 300, rule: "exact" },
+                            children: [
+                                new TableCell({
+                                    width: { size: 45, type: WidthType.PERCENTAGE },
+                                    margins: { top: 100, bottom: 100, left: 200, right: 200 },
+                                    children: [new Paragraph({
+                                        spacing: { after: 100 },
+                                        children: [new TextRun({
+                                            text: `Patient ID: ${patient.patient_id}`,
+                                            bold: true,
+                                            size: 20
+                                        })]
+                                    })]
+                                }),
+                                new TableCell({
+                                    width: { size: 45, type: WidthType.PERCENTAGE },
+                                    margins: { top: 100, bottom: 100, left: 200, right: 200 },
+                                    children: [new Paragraph({
+                                        spacing: { after: 100 },
+                                        children: [new TextRun({
+                                            text: `Scan Type: ${patient.scan_type}`,
+                                            bold: true,
+                                            size: 20
+                                        })]
+                                    })]
+                                })
+                            ]
+                        }),
+                        new TableRow({
+                            height: { value: 300, rule: "exact" },
+                            children: [
+                                new TableCell({
+                                    width: { size: 45, type: WidthType.PERCENTAGE },
+                                    margins: { top: 100, bottom: 100, left: 200, right: 200 },
+                                    children: [new Paragraph({
+                                        spacing: { after: 100 },
+                                        children: [new TextRun({
+                                            text: `Name: ${patient.name}`,
+                                            size: 20
+                                        })]
+                                    })]
+                                }),
+                                new TableCell({
+                                    width: { size: 45, type: WidthType.PERCENTAGE },
+                                    margins: { top: 100, bottom: 100, left: 200, right: 200 },
+                                    children: [new Paragraph({
+                                        spacing: { after: 100 },
+                                        children: [new TextRun({
+                                            text: `Body Part: ${patient.body_part}`,
+                                            size: 20
+                                        })]
+                                    })]
+                                })
+                            ]
+                        }),
+                        new TableRow({
+                            height: { value: 300, rule: "exact" },
+                            children: [
+                                new TableCell({
+                                    width: { size: 45, type: WidthType.PERCENTAGE },
+                                    margins: { top: 100, bottom: 100, left: 200, right: 200 },
+                                    children: [new Paragraph({
+                                        spacing: { after: 100 },
+                                        children: [new TextRun({
+                                            text: `Age/Gender: ${patient.age}/${patient.gender}`,
+                                            size: 20
+                                        })]
+                                    })]
+                                }),
+                                new TableCell({
+                                    width: { size: 45, type: WidthType.PERCENTAGE },
+                                    margins: { top: 100, bottom: 100, left: 200, right: 200 },
+                                    children: [new Paragraph({
+                                        spacing: { after: 100 },
+                                        children: [new TextRun({
+                                            text: `Referred By: Dr. ${patient.ref_by}`,
+                                            size: 20
+                                        })]
+                                    })]
+                                })
+                            ]
+                        })
+                    ]
                 }),
+                // Clinical Findings Section
                 new Paragraph({
-                    children: [new TextRun(`Age/Gender: ${patient.age}/${patient.gender}`)]
+                    children: [
+                        new TextRun({
+                            text: "CLINICAL FINDINGS",
+                            size: 24, // 12pt
+                            bold: true,
+                            color: "FF0000" // Red
+                        })
+                    ],
+                    spacing: { before: 300, after: 100 }
                 }),
+
                 new Paragraph({
-                    children: [new TextRun(`Scan Type: ${patient.scan_type}`)]
+                    children: [new TextRun({
+                        text: stripHtmlTags(patient.report) || 'No significant abnormalities detected.',
+                        size: 22 // 11pt
+                    })],
+                    spacing: { before: 200, after: 400 }
                 }),
+
+                // Signature Section
                 new Paragraph({
-                    children: [new TextRun(`Body Part: ${patient.body_part}`)]
+                    children: [
+                        new TextRun({
+                            text: "Radiologist Signature: ___________________________",
+                            size: 20
+                        })
+                    ],
+                    spacing: { before: 500, after: 200 }
                 }),
+
                 new Paragraph({
-                    children: [new TextRun(`Referred By: Dr. ${patient.ref_by}`)]
+                    children: [
+                        new TextRun({
+                            text: "Date: _______________",
+                            size: 20
+                        })
+                    ],
+                    alignment: AlignmentType.RIGHT,
+                    spacing: { before: 100, after: 300 }
                 }),
+
+                // Footer disclaimer
                 new Paragraph({
-                    text: "REPORT",
-                    heading: HeadingLevel.HEADING_2
+                    children: [
+                        new TextRun({
+                            text: "This is a computer generated report. Please consult your physician for clinical interpretation.",
+                            size: 16, // 8pt
+                            color: "666666"
+                        })
+                    ],
+                    alignment: AlignmentType.CENTER,
+                    spacing: { before: 400, after: 150 }
                 }),
+
                 new Paragraph({
-                    children: [new TextRun(patient.report || 'No report available')]
+                    children: [
+                        new TextRun({
+                            text: "* This report is confidential and intended for medical professional use only.",
+                            size: 14, // 7pt
+                            color: "666666"
+                        })
+                    ],
+                    alignment: AlignmentType.CENTER,
+                    spacing: { before: 100 }
                 })
             ]
         }]
