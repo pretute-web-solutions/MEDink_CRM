@@ -375,20 +375,353 @@ tr.status-draft  { background-color: #fef9e7 !important; }  /* cream */
     font-weight: 600;
 }
 
+/* 🔹 PROFILE ICON */
+.profile-container {
+    position: relative;
+    margin-left: auto;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+    min-width: 60px;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #1e88e5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+    border: 2px solid white;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.5);
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    min-width: 200px;
+    display: none;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.profile-dropdown.show {
+    display: block;
+}
+
+.profile-dropdown-header {
+    padding: 15px;
+    background: linear-gradient(90deg, #007bff, #1e88e5);
+    color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.profile-dropdown-header strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.profile-dropdown-header small {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.profile-dropdown-menu {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+}
+
+.profile-dropdown-menu li {
+    padding: 0;
+}
+
+.profile-dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.profile-dropdown-menu a:hover {
+    background: #f5f5f5;
+}
+
+.profile-dropdown-menu a i {
+    width: 20px;
+    color: #007bff;
+}
+
+.profile-dropdown-menu a.logout-link {
+    color: #dc3545;
+    border-top: 1px solid #e0e0e0;
+}
+
+.profile-dropdown-menu a.logout-link i {
+    color: #dc3545;
+}
+
+.profile-dropdown-menu a.logout-link:hover {
+    background: #ffebee;
+}
+
+/* ===== PROFILE MODAL ===== */
+#profileModalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100000;
+}
+
+.profile-modal {
+    width: 700px;
+    max-width: 95%;
+    background: #fff;
+    border-radius: 14px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    position: relative;
+}
+
+.profile-modal-header {
+    background: linear-gradient(90deg, #007bff, #1e88e5);
+    padding: 14px;
+    text-align: center;
+    height: 40px;
+    position: relative;
+}
+
+.profile-modal-header h2 {
+    color: #fff;
+    margin: 0;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.profile-modal-close {
+    position: absolute;
+    right: 16px;
+    top: 8px;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.profile-modal-body {
+    padding: 30px;
+}
+
+.profile-edit-btn {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    padding: 8px 18px;
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.profile-edit-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.profile-header-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.profile-avatar-wrapper {
+    position: relative;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+}
+
+.profile-avatar-overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 0;
+    border-radius: 0 0 50px 50px;
+    display: none;
+}
+
+.profile-avatar-wrapper.editable .profile-avatar-overlay {
+    display: block;
+}
+
+#profileImageInput {
+    display: none;
+}
+
+.profile-info h2 {
+    font-size: 22px;
+    margin: 0 0 8px 0;
+    color: #333;
+}
+
+.profile-info p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+.profile-details {
+    margin-top: 20px;
+}
+
+.profile-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    gap: 15px;
+}
+
+.profile-label {
+    width: 200px;
+    font-weight: 600;
+    color: #555;
+    flex-shrink: 0;
+}
+
+.profile-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.profile-input:disabled {
+    background: #f5f5f5;
+    border: none;
+    color: #333;
+}
+
+.profile-submit-btn {
+    margin-top: 25px;
+    padding: 10px 25px;
+    background: #16a34a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: none;
+    font-size: 14px;
+}
+
+.profile-submit-btn:hover {
+    background: #15803d;
+}
+
+/* Responsive Profile Modal */
+@media (max-width: 768px) {
+    .profile-modal {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .profile-modal-body {
+        padding: 20px;
+    }
+
+    .profile-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .profile-label {
+        width: 100%;
+    }
+
+    .profile-input {
+        width: 100%;
+    }
+
+    .profile-header-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-avatar-wrapper {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
 
     </style>
 </head>
 <body>
 <div class="top-navbar">
     <img height="40" style="border-radius: 30px;" src="data:image/png;base64,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" alt="Profile">
-    
+
     <span >DOCTOR</span>
 
     {% if request.session.user_name %}
-         <span style="margin-left: 900px; font-size: 13px; margin-top: 30px;">Welcome, {{ request.session.user_name }}</span>
-         <a href="{% url 'logout' %}" style="text-decoration:none; margin-top: 30px; margin-left: 10px; color:red;">
-          <i class="fas fa-sign-out-alt"></i> 
-         </a>
+    <div class="profile-container">
+       <span style="font-size: 13px;">Welcome, {{ request.session.user_name }}</span>
+       <div class="profile-icon" onclick="toggleProfileDropdown()" id="profileIconContainer">
+           <img id="profileIcon" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJDMTMuMSAyIDE0IDIuOSAxNCA0QzE0IDUuMSAxMy4xIDYgMTIgNkMxMC45IDYgMTAgNS4xIDEwIDRDMTAgMi45IDEwLjkgMiAxMiAyWk0yMSAxOVYyMEgzVjE5QzMgMTYuMzMgNS4zMyAxNCA4IDE0SDE2QzE4LjY3IDE0IDIxIDE2LjMzIDIxIDE5WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center; display: none;">
+           <i class="fas fa-user" id="defaultProfileIcon" style="display: block;"></i>
+       </div>
+       <div class="profile-dropdown" id="profileDropdown">
+           <div class="profile-dropdown-header">
+               <strong>{{ request.session.user_name }}</strong>
+               <small>Logged in</small>
+           </div>
+           <ul class="profile-dropdown-menu">
+               <li><a href="#" onclick="openMyProfile(); return false;"><i class="fas fa-user-circle"></i> My Profile</a></li>
+               <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+               <li><a href="{% url 'logout' %}" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+           </ul>
+       </div>
+    </div>
     {% endif %}
 
 </div>
@@ -542,6 +875,62 @@ tr.status-draft  { background-color: #fef9e7 !important; }  /* cream */
 </div>
 
 {% endblock %}
+
+<!-- ===== PROFILE MODAL ===== -->
+<div id="profileModalOverlay">
+    <div class="profile-modal">
+        <div class="profile-modal-header">
+            <h2>User Profile</h2>
+            <button class="profile-edit-btn" onclick="enableProfileEdit()" id="profileEditBtn">Edit</button>
+            <span class="profile-modal-close" onclick="closeProfileModal()">×</span>
+        </div>
+
+        <div class="profile-modal-body">
+            <div class="profile-header-section">
+                <div class="profile-avatar-wrapper" onclick="triggerProfileUpload()" id="profileAvatarWrapper">
+                    <img src="https://via.placeholder.com/90" class="profile-avatar" id="profileAvatar">
+                    <div class="profile-avatar-overlay">Edit</div>
+                    <input type="file" id="profileImageInput" accept="image/*" onchange="handleProfilePictureChange(event)">
+                </div>
+                <div class="profile-info">
+                    <h2 id="profileNameDisplay">{{ request.session.user_name }}</h2>
+                    <p>Registered on: <span id="profileRegDate">10 Jan 2026</span></p>
+                </div>
+            </div>
+
+            <form id="profileForm">
+                <div class="profile-details">
+                    <div class="profile-row">
+                        <div class="profile-label">Full Name</div>
+                        <input type="text" class="profile-input" id="profileFullName" placeholder="Enter your name" disabled>
+                    </div>
+
+                    <div class="profile-row">
+                        <div class="profile-label">Username</div>
+                        <input type="text" class="profile-input" id="profileUsername" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+                    </div>
+
+                    <div class="profile-row">
+                        <div class="profile-label">Password</div>
+                        <input type="password" class="profile-input" id="profilePassword" value="••••••••" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+                    </div>
+
+                    <div class="profile-row">
+                        <div class="profile-label">Email <span style="color: #999; font-size: 12px;">(Optional)</span></div>
+                        <input type="email" class="profile-input" id="profileEmail" placeholder="Enter email address (optional)" disabled>
+                    </div>
+
+                    <div class="profile-row">
+                        <div class="profile-label">Phone <span style="color: #999; font-size: 12px;">(Optional)</span></div>
+                        <input type="text" class="profile-input" id="profilePhone" placeholder="Enter phone number (optional)" disabled>
+                    </div>
+
+                    <button type="submit" class="profile-submit-btn" id="profileSubmitBtn">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div id="footerPagination">
 
@@ -1173,6 +1562,372 @@ function prevPage() {
         paginateTable();
     }
 }
+/* CSRF */
+function getCookie(name) {
+    let cookieValue = null;
+    document.cookie.split(";").forEach(c => {
+        c = c.trim();
+        if (c.startsWith(name + "=")) cookieValue = c.split("=")[1];
+    });
+    return cookieValue;
+}
+
+/* PROFILE DROPDOWN */
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.classList.toggle("show");
+}
+
+// Close dropdown when clicking outside
+document.addEventListener("click", function(event) {
+    const profileContainer = document.querySelector(".profile-container");
+    const dropdown = document.getElementById("profileDropdown");
+
+    if (profileContainer && !profileContainer.contains(event.target)) {
+        if (dropdown) {
+            dropdown.classList.remove("show");
+        }
+    }
+});
+
+/* PROFILE MODAL */
+let profileEditMode = false;
+
+function openMyProfile() {
+    const overlay = document.getElementById("profileModalOverlay");
+    overlay.style.display = "flex";
+
+    // Close profile dropdown
+    const dropdown = document.getElementById("profileDropdown");
+    if (dropdown) {
+        dropdown.classList.remove("show");
+    }
+
+    // Fetch profile data from backend
+    fetchProfileData();
+
+    // Reset edit mode
+    profileEditMode = false;
+    document.getElementById("profileEditBtn").style.display = "inline-block";
+    document.getElementById("profileSubmitBtn").style.display = "none";
+    document.querySelectorAll(".profile-input").forEach(i => {
+        // Keep username and password always disabled (readonly)
+        if (i.id === 'profileUsername' || i.id === 'profilePassword') {
+            i.disabled = true;
+        } else {
+            i.disabled = true;
+        }
+    });
+    document.getElementById("profileAvatarWrapper").classList.remove("editable");
+}
+
+// Fetch profile data from backend
+function fetchProfileData() {
+    fetch('/api/profile/')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const profile = data.profile;
+
+                // Update form fields
+                document.getElementById("profileFullName").value = profile.name || '';
+                document.getElementById("profileUsername").value = profile.username || '';
+                document.getElementById("profilePassword").value = profile.password || '••••••••';
+                document.getElementById("profileEmail").value = profile.email || '';
+                document.getElementById("profilePhone").value = profile.phone || '';
+
+                // Update display name
+                document.getElementById("profileNameDisplay").textContent = profile.name || 'User';
+
+                // Update registration date
+                document.getElementById("profileRegDate").textContent = profile.created_at || 'N/A';
+
+                // Update profile picture in modal
+                if (profile.profile_picture) {
+                    document.getElementById("profileAvatar").src = profile.profile_picture.startsWith('data:')
+                        ? profile.profile_picture
+                        : `data:image/jpeg;base64,${profile.profile_picture}`;
+                }
+
+                // Update profile icon in navbar
+                updateProfileIcon(profile.profile_picture);
+            } else {
+                alert('Error loading profile: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching profile:', error);
+            alert('Error loading profile. Please try again.');
+        });
+}
+
+// Update profile icon in navbar
+function updateProfileIcon(profilePicture) {
+    console.log('updateProfileIcon called with:', profilePicture ? 'Present (' + profilePicture.length + ' chars)' : 'Not present');
+
+    const profileIconImg = document.getElementById("profileIcon");
+    const defaultIcon = document.getElementById("defaultProfileIcon");
+
+    if (!profileIconImg || !defaultIcon) {
+        console.error('Profile icon elements not found');
+        return;
+    }
+
+    if (profilePicture && profilePicture.trim()) {
+        let imageSrc;
+        if (profilePicture.startsWith('data:')) {
+            imageSrc = profilePicture;
+        } else {
+            imageSrc = `data:image/jpeg;base64,${profilePicture}`;
+        }
+
+        profileIconImg.src = imageSrc;
+        profileIconImg.style.display = "block";
+        profileIconImg.style.visibility = "visible";
+        profileIconImg.style.opacity = "1";
+        defaultIcon.style.display = "none";
+
+        // Add error handling for image loading
+        profileIconImg.onerror = function() {
+            console.error('Failed to load profile image, falling back to default icon');
+            profileIconImg.style.display = "none";
+            defaultIcon.style.display = "block";
+        };
+
+        profileIconImg.onload = function() {
+            console.log('Profile icon image loaded successfully');
+            // Ensure full visibility
+            profileIconImg.style.opacity = "1";
+            profileIconImg.style.visibility = "visible";
+        };
+
+        profileIconImg.onabort = function() {
+            console.error('Profile icon image loading aborted');
+        };
+
+        console.log('Profile icon update initiated');
+    } else {
+        profileIconImg.style.display = "none";
+        defaultIcon.style.display = "block";
+        console.log('Profile icon reset to default');
+    }
+}
+
+function closeProfileModal() {
+    const overlay = document.getElementById("profileModalOverlay");
+    overlay.style.display = "none";
+
+    // Reset form if in edit mode
+    if (profileEditMode) {
+        enableProfileEdit(); // Toggle to exit edit mode
+    }
+}
+
+function enableProfileEdit() {
+    profileEditMode = !profileEditMode;
+
+    if (profileEditMode) {
+        // Enable only editable fields (name, email, phone)
+        // Username and password remain disabled (non-editable)
+        document.getElementById("profileFullName").disabled = false;
+        document.getElementById("profileEmail").disabled = false;
+        document.getElementById("profilePhone").disabled = false;
+        // Username and password stay disabled
+        document.getElementById("profileUsername").disabled = true;
+        document.getElementById("profilePassword").disabled = true;
+
+        document.getElementById("profileSubmitBtn").style.display = "inline-block";
+        document.getElementById("profileEditBtn").style.display = "none";
+        document.getElementById("profileAvatarWrapper").classList.add("editable");
+    } else {
+        // Disable all fields
+        document.querySelectorAll(".profile-input").forEach(i => i.disabled = true);
+        document.getElementById("profileSubmitBtn").style.display = "none";
+        document.getElementById("profileEditBtn").style.display = "inline-block";
+        document.getElementById("profileAvatarWrapper").classList.remove("editable");
+    }
+}
+
+function triggerProfileUpload() {
+    if (profileEditMode) {
+        document.getElementById("profileImageInput").click();
+    }
+}
+
+// Profile image upload handler
+function handleProfilePictureChange(event) {
+    const file = event.target.files[0];
+    if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select a valid image file.');
+            return;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size should be less than 5MB.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const base64Image = reader.result;
+            document.getElementById("profileAvatar").src = base64Image;
+            // Store the base64 data for form submission
+            document.getElementById("profileAvatar").dataset.base64 = base64Image;
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Attach the handler to the input
+document.getElementById("profileImageInput").addEventListener("change", handleProfilePictureChange);
+
+// Profile form submit handler
+document.getElementById("profileForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    // Get form values
+    const fullName = document.getElementById("profileFullName").value.trim();
+    const email = document.getElementById("profileEmail").value.trim();
+    const phone = document.getElementById("profilePhone").value.trim();
+
+    // Validate name (required)
+    if (!fullName) {
+        alert("Full name is required!");
+        return;
+    }
+
+    // Get profile picture data
+    const profileAvatar = document.getElementById("profileAvatar");
+    let profilePicture = null;
+
+    if (profileAvatar.dataset.base64) {
+        // New image uploaded - extract base64 data without prefix
+        const base64Data = profileAvatar.dataset.base64;
+        if (base64Data.includes(',')) {
+            profilePicture = base64Data.split(',')[1];
+        } else {
+            profilePicture = base64Data;
+        }
+    }
+
+    // Prepare data to send (only editable fields)
+    const data = {
+        name: fullName,
+        email: email || null,  // Send null if empty (optional)
+        phone: phone || null,  // Send null if empty (optional)
+        profile_picture: profilePicture  // Send base64 without prefix
+    };
+
+    // Disable submit button while saving
+    const submitBtn = document.getElementById("profileSubmitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Saving...";
+
+    // Debug: Log the data being sent
+    console.log('Sending profile update data:', {
+        name: fullName,
+        email: email,
+        phone: phone,
+        profilePicture: profilePicture ? 'Present (' + profilePicture.length + ' chars)' : 'Not present',
+        dataObject: data
+    });
+
+    // Debug: Show data being sent
+    console.log('Sending profile update:', { name: fullName, email, phone, hasProfilePic: !!profilePicture });
+
+    // Send data to backend
+    const csrfToken = getCookie("csrftoken");
+    console.log('CSRF Token:', csrfToken);  // Debug log
+
+    fetch('/api/profile/update/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        // Debug: Log the response
+        console.log('Profile update response:', result);
+
+        // Debug: Log response status
+        console.log('Profile update result:', result.status, result.message);
+
+        if (result.status === 'success') {
+            // Update display name
+            document.getElementById("profileNameDisplay").textContent = result.profile.name;
+
+            // Update registration date if returned
+            if (result.profile.created_at) {
+                document.getElementById("profileRegDate").textContent = result.profile.created_at;
+            }
+
+            // Exit edit mode
+            profileEditMode = false;
+            document.getElementById("profileFullName").disabled = true;
+            document.getElementById("profileEmail").disabled = true;
+            document.getElementById("profilePhone").disabled = true;
+            document.getElementById("profileSubmitBtn").style.display = "none";
+            document.getElementById("profileEditBtn").style.display = "inline-block";
+            document.getElementById("profileAvatarWrapper").classList.remove("editable");
+
+            // Update profile picture in modal if changed
+            if (result.profile.profile_picture) {
+                const profilePicUrl = result.profile.profile_picture.startsWith('data:')
+                    ? result.profile.profile_picture
+                    : `data:image/jpeg;base64,${result.profile.profile_picture}`;
+                document.getElementById("profileAvatar").src = profilePicUrl;
+                // Clear the temporary base64 data
+                delete document.getElementById("profileAvatar").dataset.base64;
+            }
+
+            // Update profile icon in navbar immediately
+            setTimeout(() => {
+                updateProfileIcon(result.profile.profile_picture);
+            }, 100);
+
+            // Update welcome message in navbar if needed
+            const welcomeSpan = document.querySelector(".profile-container span");
+            if (welcomeSpan) {
+                welcomeSpan.textContent = `Welcome, ${result.profile.name}`;
+            }
+
+            // Close modal after successful update
+            setTimeout(() => {
+                closeProfileModal();
+                alert("Profile updated successfully!");
+            }, 500);
+        } else {
+            alert("Error: " + (result.message || "Failed to update profile"));
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit";
+        }
+    })
+    .catch(error => {
+        console.error('Error updating profile:', error);
+        alert("Error updating profile. Please try again.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+    });
+});
+
+// Close modal when clicking outside
+document.getElementById("profileModalOverlay").addEventListener("click", function(e) {
+    if (e.target === this) {
+        closeProfileModal();
+    }
+});
+
+// Load profile data on page load
+window.addEventListener('load', function() {
+    // Load profile data to update navbar icon
+    fetchProfileData();
+});
 </script>
 
 </body>

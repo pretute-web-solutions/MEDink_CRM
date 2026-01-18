@@ -1354,3 +1354,109 @@ def admin_hospitals_api(request):
         'hospitals': list(hospitals.values('id','name'))
     })
 
+
+# Profile API endpoints
+@csrf_exempt
+def get_profile(request):
+    """Get current user profile data"""
+    if 'user_id' not in request.session:
+        return JsonResponse({'status': 'error', 'message': 'Not authenticated'}, status=401)
+    
+    try:
+        user_id = request.session['user_id']
+        user = UserAccount.objects.get(id=user_id)
+        
+        # Format created_at date
+        from django.utils import timezone
+        reg_date = user.created_at.strftime('%d %b %Y') if user.created_at else 'N/A'
+        
+        return JsonResponse({
+            'status': 'success',
+            'profile': {
+                'name': user.name,
+                'username': user.userid,
+                'password': '••••••••',  # Don't send actual password
+                'email': user.email or '',
+                'phone': user.phone or '',
+                'profile_picture': user.profile_picture or '',
+                'created_at': reg_date,
+                'usertype': user.usertype
+            }
+        })
+    except UserAccount.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'User not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+@csrf_exempt
+def update_profile(request):
+    """Update user profile (name, email, phone, profile_picture)"""
+    """Update user profile (name, email, phone only)"""
+    if 'user_id' not in request.session:
+        return JsonResponse({'status': 'error', 'message': 'Not authenticated'}, status=401)
+    
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
+    
+    try:
+        user_id = request.session['user_id']
+        user = UserAccount.objects.get(id=user_id)
+
+        data = json.loads(request.body)
+        print(f"Profile update request for user {user_id}:")
+        print(f"  Name: {data.get('name')}")
+        print(f"  Email: {data.get('email')}")
+        print(f"  Phone: {data.get('phone')}")
+        print(f"  Profile Picture: {'Present' if data.get('profile_picture') else 'Not present'}")
+        if data.get('profile_picture'):
+            print(f"  Profile Picture length: {len(data.get('profile_picture'))}")
+        
+        # Only allow updating name, email, phone, and profile_picture
+        if 'name' in data:
+            user.name = data['name']
+        if 'email' in data:
+            user.email = data.get('email') or None  # Empty string to None
+        if 'phone' in data:
+            user.phone = data.get('phone') or None  # Empty string to None
+        if 'profile_picture' in data:
+            user.profile_picture = data.get('profile_picture') or None  # Empty string to None
+
+        user.save()
+        print(f"User {user_id} profile updated successfully")
+        print(f"  Saved name: {user.name}")
+        print(f"  Saved email: {user.email}")
+        print(f"  Saved phone: {user.phone}")
+        print(f"  Saved profile_picture: {'Present' if user.profile_picture else 'Not present'}")
+        if user.profile_picture:
+            print(f"  Profile picture length: {len(user.profile_picture)}")
+        
+        # Update session name if name changed
+        if 'name' in data:
+            request.session['user_name'] = user.name
+        
+        # Format created_at date
+        from django.utils import timezone
+        reg_date = user.created_at.strftime('%d %b %Y') if user.created_at else 'N/A'
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Profile updated successfully',
+            'profile': {
+                'name': user.name,
+                'username': user.userid,
+                'email': user.email or '',
+                'phone': user.phone or '',
+                'profile_picture': user.profile_picture or '',
+                'created_at': reg_date
+            }
+        })
+    except UserAccount.DoesNotExist:
+        print(f"User not found: {user_id}")  # Debug log
+        return JsonResponse({'status': 'error', 'message': 'User not found'}, status=404)
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error: {str(e)}")  # Debug log
+        return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'}, status=400)
+    except Exception as e:
+        print(f"Unexpected error in profile update: {str(e)}")  # Debug log
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

@@ -96,7 +96,10 @@ class UserAccount(models.Model):
     password = models.CharField(max_length=100)
     usertype = models.CharField(max_length=10, choices=USERTYPES)
     is_active = models.BooleanField(default=True)
-    
+    email = models.EmailField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    profile_picture = models.TextField(null=True, blank=True)  # Base64 encoded image
+
     parent_admin = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='sub_users')
 
 

@@ -67,6 +67,8 @@ urlpatterns = [
     path("api/patient/<int:pk>/save-cropped-image/", save_cropped_image),
     path("api/patient/<int:pk>/save-images/", save_images),
     path('api/admin/hospitals/',admin_hospitals_api, name='admin_hospitals_api'),
+    path('api/profile/', get_profile, name='get_profile'),
+    path('api/profile/update/', update_profile, name='update_profile'),
 
 ]
     
