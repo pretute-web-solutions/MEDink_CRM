@@ -16,6 +16,8 @@ class Patient(models.Model):
     ref_by = models.CharField(max_length=100, default='Doctor Unknown')
     # Changed from ImageField to TextField
     scan_image = models.TextField()
+    scan_images = models.TextField(default="[]") 
+    # scan_image = models.CharField(max_length=255, null=True, blank=True) 
     entry_time = models.DateTimeField(auto_now_add=True)
     final_time = models.DateTimeField(null=True, blank=True)
     tat = models.CharField(max_length=20, null=True, blank=True) 
@@ -99,6 +101,11 @@ class UserAccount(models.Model):
     email = models.EmailField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     profile_picture = models.TextField(null=True, blank=True)  # Base64 encoded image
+
+    # Signature fields for radiologists
+    signature_image = models.TextField(null=True, blank=True)  # Base64 encoded signature image
+    signature_description = models.TextField(null=True, blank=True)
+    signature_disclaimer = models.TextField(null=True, blank=True)
 
     parent_admin = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='sub_users')
 

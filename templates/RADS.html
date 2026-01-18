@@ -925,6 +925,27 @@ tr.status-draft  { background-color: #fef9e7 !important; }  /* cream */
                         <input type="text" class="profile-input" id="profilePhone" placeholder="Enter phone number (optional)" disabled>
                     </div>
 
+                    <!-- Signature Section (Only visible for radiologists) -->
+                    <div id="signatureDisplaySection" style="display: none;">
+                        <div class="profile-row">
+                            <div class="profile-label">Doctor Signature</div>
+                            <div id="signatureDisplay" class="text-center">
+                                <img id="signatureImage" src="" alt="Doctor Signature" style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px; display: none;">
+                                <p id="noSignatureText" style="color: #999; font-style: italic;">No signature uploaded</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-row" id="signatureDescriptionRow">
+                            <div class="profile-label">Description</div>
+                            <div id="signatureDescription" class="profile-input" style="background: #f5f5f5; border: none; color: #333;"></div>
+                        </div>
+
+                        <div class="profile-row" id="signatureDisclaimerRow">
+                            <div class="profile-label">Disclaimer</div>
+                            <div id="signatureDisclaimer" class="profile-input" style="background: #f5f5f5; border: none; color: #333;"></div>
+                        </div>
+                    </div>
+
                     <button type="submit" class="profile-submit-btn" id="profileSubmitBtn">Submit</button>
                 </div>
             </form>
@@ -1651,6 +1672,32 @@ function fetchProfileData() {
 
                 // Update profile icon in navbar
                 updateProfileIcon(profile.profile_picture);
+
+                // Handle signature display for radiologists
+                const signatureSection = document.getElementById('signatureDisplaySection');
+                if (profile.usertype === 'RADS') {
+                    signatureSection.style.display = 'block';
+
+                    // Display signature image
+                    if (profile.signature_image) {
+                        document.getElementById('signatureImage').src = profile.signature_image.startsWith('data:')
+                            ? profile.signature_image
+                            : `data:image/jpeg;base64,${profile.signature_image}`;
+                        document.getElementById('signatureImage').style.display = 'block';
+                        document.getElementById('noSignatureText').style.display = 'none';
+                    } else {
+                        document.getElementById('signatureImage').style.display = 'none';
+                        document.getElementById('noSignatureText').style.display = 'block';
+                    }
+
+                    // Display signature description
+                    document.getElementById('signatureDescription').textContent = profile.signature_description || 'No description provided';
+
+                    // Display signature disclaimer
+                    document.getElementById('signatureDisclaimer').textContent = profile.signature_disclaimer || 'No disclaimer provided';
+                } else {
+                    signatureSection.style.display = 'none';
+                }
             } else {
                 alert('Error loading profile: ' + (data.message || 'Unknown error'));
             }

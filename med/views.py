@@ -1380,7 +1380,10 @@ def get_profile(request):
                 'phone': user.phone or '',
                 'profile_picture': user.profile_picture or '',
                 'created_at': reg_date,
-                'usertype': user.usertype
+                'usertype': user.usertype,
+                'signature_image': user.signature_image or '',
+                'signature_description': user.signature_description or '',
+                'signature_disclaimer': user.signature_disclaimer or ''
             }
         })
     except UserAccount.DoesNotExist:
@@ -1460,3 +1463,188 @@ def update_profile(request):
     except Exception as e:
         print(f"Unexpected error in profile update: {str(e)}")  # Debug log
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@csrf_exempt
+def create_user(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
+
+    try:
+        # Check if user is super admin
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({'status': 'error', 'message': 'Not authenticated'}, status=401)
+
+        current_user = UserAccount.objects.get(id=user_id)
+        if current_user.usertype not in ['SUPERADMIN', 'ADMIN']:
+            return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
+
+        # Get form data
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '').strip()
+        role = request.POST.get('role', '').strip()
+        phone = request.POST.get('phone', '').strip()
+
+        # Validate required fields
+        if not all([name, username, password, role]):
+            return JsonResponse({'status': 'error', 'message': 'Name, username, password and role are required'}, status=400)
+
+        # Validate role
+        valid_roles = ['admin', 'imaging', 'rads']
+        if role not in valid_roles:
+            return JsonResponse({'status': 'error', 'message': 'Invalid role'}, status=400)
+
+        # Check if username already exists
+        if UserAccount.objects.filter(userid=username).exists():
+            return JsonResponse({'status': 'error', 'message': 'Username already exists'}, status=400)
+
+        # Map role to usertype
+        usertype_map = {
+            'admin': 'ADMIN',
+            'imaging': 'IMAGING',
+            'rads': 'RADS'
+        }
+
+        # Create user
+        user_data = {
+            'name': name,
+            'userid': username,
+            'password': password,  # Note: In production, this should be hashed
+            'usertype': usertype_map[role],
+            'email': email if email else '',
+            'phone': phone if phone else '',
+            'is_active': True
+        }
+
+        # Set parent_admin for users created by ADMIN
+        if current_user.usertype == 'ADMIN':
+            user_data['parent_admin'] = current_user
+
+        user = UserAccount.objects.create(**user_data)
+
+        # Handle signature data for radiologists
+        if role == 'rads':
+            signature_file = request.FILES.get('signature_file')
+            signature_description = request.POST.get('signature_description', '').strip()
+            signature_disclaimer = request.POST.get('signature_disclaimer', '').strip()
+
+            if signature_file:
+                # Validate file type
+                if not signature_file.content_type in ['image/jpeg', 'image/jpg', 'image/png']:
+                    user.delete()  # Delete created user if signature is invalid
+                    return JsonResponse({'status': 'error', 'message': 'Signature must be JPG or PNG'}, status=400)
+
+                # Convert image to base64
+                import base64
+                from io import BytesIO
+                from PIL import Image
+
+                try:
+                    # Open and validate image
+                    image = Image.open(signature_file)
+                    # Convert to RGB if necessary
+                    if image.mode != 'RGB':
+                        image = image.convert('RGB')
+
+                    # Resize if too large (max 800px width)
+                    max_width = 800
+                    if image.width > max_width:
+                        ratio = max_width / image.width
+                        new_height = int(image.height * ratio)
+                        image = image.resize((max_width, new_height), Image.Resampling.LANCZOS)
+
+                    # Convert to base64
+                    buffer = BytesIO()
+                    image.save(buffer, format='JPEG', quality=85)
+                    signature_base64 = base64.b64encode(buffer.getvalue()).decode()
+
+                    user.signature_image = signature_base64
+                except Exception as e:
+                    user.delete()  # Delete created user if signature processing fails
+                    return JsonResponse({'status': 'error', 'message': f'Error processing signature: {str(e)}'}, status=400)
+
+            if signature_description:
+                user.signature_description = signature_description
+            if signature_disclaimer:
+                user.signature_disclaimer = signature_disclaimer
+
+            user.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'message': 'User created successfully',
+            'user': {
+                'id': user.id,
+                'name': user.name,
+                'username': user.userid,
+                'email': user.email,
+                'role': user.usertype,
+                'phone': user.phone
+            }
+        })
+
+    except Exception as e:
+        print(f"Error creating user: {str(e)}")
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+
+def index(request):
+    # Get user information from session
+    user_type = request.session.get('user_type', 'UNKNOWN')
+    user_id = request.session.get('user_id')
+
+    centers = []
+    rads = []
+
+    try:
+        if user_type == 'SUPERADMIN':
+            # Super admin sees all active imaging centers and radiologists
+            centers = UserAccount.objects.filter(usertype='IMAGING', is_active=True)
+            rads = UserAccount.objects.filter(usertype='RADS', is_active=True)
+        elif user_type == 'ADMIN':
+            # Admin sees imaging centers and radiologists under their management
+            centers = UserAccount.objects.filter(usertype='IMAGING', is_active=True, parent_admin_id=user_id)
+            rads = UserAccount.objects.filter(usertype='RADS', is_active=True, parent_admin_id=user_id)
+        # For IMAGING and RADS users, centers and rads are not needed for filtering
+        # They will be None and the dropdowns won't be populated
+
+    except Exception as e:
+        print(f"Error fetching centers/rads for index page: {str(e)}")
+        # Continue with empty lists if there's an error
+
+    # Get patients for the table - you might want to filter based on user type
+    patients = []
+    try:
+        if user_type == 'SUPERADMIN':
+            patients = Patient.objects.all().order_by('-entry_time')
+        elif user_type == 'ADMIN':
+            # Admin sees patients from their imaging centers and assigned to their radiologists
+            admin_centers = UserAccount.objects.filter(usertype='IMAGING', parent_admin_id=user_id).values_list('name', flat=True)
+            admin_rads_ids = UserAccount.objects.filter(usertype='RADS', parent_admin_id=user_id).values_list('id', flat=True)
+            patients = Patient.objects.filter(
+                center__in=admin_centers
+            ).order_by('-entry_time')
+        elif user_type == 'IMAGING':
+            # Imaging center sees their own patients
+            center_name = request.session.get('user_name', '')
+            patients = Patient.objects.filter(center=center_name).order_by('-entry_time')
+        elif user_type == 'RADS':
+            # Radiologist sees patients assigned to them
+            patients = Patient.objects.filter(assigned_to_id=user_id).order_by('-entry_time')
+        else:
+            patients = []
+    except Exception as e:
+        print(f"Error fetching patients: {str(e)}")
+        patients = []
+
+    context = {
+        'centers': centers,
+        'rads': rads,
+        'patients': patients,
+        'user_name': request.session.get('user_name', ''),
+        'user_type': user_type,
+    }
+
+    return render(request, 'index.html', context)

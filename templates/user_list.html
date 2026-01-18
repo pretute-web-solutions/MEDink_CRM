@@ -441,7 +441,7 @@
             </select>
           </div>
 
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal"><i class="fa-solid fa-user-plus"></i>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal" onclick="resetAddUserModal()"><i class="fa-solid fa-user-plus"></i>
  Add User</button>
         </div>
       </div>
@@ -508,8 +508,8 @@
 <!-- Modals -->
 <!-- Add User Modal -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <form method="POST" action="{% url 'add_user' %}" id="addUserForm" novalidate>
+  <div class="modal-dialog modal-lg">
+    <form method="POST" action="/api/admin/create-user/" id="addUserForm" enctype="multipart/form-data" novalidate>
       {% csrf_token %}
       <div class="modal-content">
         <div class="modal-header custom">
@@ -521,6 +521,9 @@
         </div>
 
         <div class="modal-body">
+          <!-- User Information Section -->
+          <h6 class="mb-3">User Information</h6>
+
           <div class="form-row">
             <div class="form-group input-icon">
               <span class="icon">👤</span>
@@ -530,8 +533,8 @@
 
             <div class="form-group input-icon">
               <span class="icon">🆔</span>
-              <input name="userid" class="form-control" placeholder="User ID" required>
-              <div class="invalid-feedback">User ID is required.</div>
+              <input name="username" class="form-control" placeholder="Username" required>
+              <div class="invalid-feedback">Username is required.</div>
             </div>
           </div>
 
@@ -545,32 +548,67 @@
             </div>
 
             <div class="form-group">
-              <select class="form-select" name="usertype" id="usertypeSelect" required>
-                <option value="">-- Select --</option>
-                <option value="ADMIN">Admin</option>
-                <option value="IMAGING">Imaging</option>
-                <option value="RADS">RADS</option>
+              <select class="form-select" name="role" id="usertypeSelect" required onchange="toggleSignatureFields()">
+                <option value="">-- Select Role --</option>
+                <option value="admin">Admin</option>
+                <option value="imaging">Imaging Center</option>
+                <option value="rads">Radiologist</option>
               </select>
-              <div class="invalid-feedback">Select a user type.</div>
+              <div class="invalid-feedback">Select a user role.</div>
             </div>
           </div>
 
           <div id="adminSelectContainer" style="display:none; margin-top:6px;">
-            <label class="muted" style="font-size:13px; margin-bottom:6px;">Assign Admin</label>
+            <label class="muted" style="font-size:13px; margin-bottom:6px;">Assign Parent Admin</label>
             <select class="form-select" name="parent_admin_id">
-              <option value="">-- Select --</option>
+              <option value="">-- Select Parent Admin --</option>
               {% for admin in admins %}
                 <option value="{{ admin.id }}">{{ admin.name }}</option>
               {% endfor %}
             </select>
             <div class="form-text muted">Choose a parent admin for Imaging/RADS users.</div>
           </div>
+
+          <!-- Signature Details Section (Initially Hidden) -->
+          <div id="signatureSection" style="display: none; margin-top: 20px; border-top: 1px solid #dee2e6; padding-top: 20px;">
+            <h6 class="mb-3">Doctor Signature Details</h6>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="signatureFile" class="form-label">Signature Image (JPG/PNG) *</label>
+                <input type="file" class="form-control" id="signatureFile" name="signature_file" accept=".jpg,.jpeg,.png">
+                <div class="form-text">Upload doctor's signature image</div>
+              </div>
+
+              <div class="form-group">
+                <label for="signatureDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="signatureDescription" name="signature_description" rows="3" placeholder="Enter doctor's description..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="signatureDisclaimer" class="form-label">Disclaimer</label>
+                <textarea class="form-control" id="signatureDisclaimer" name="signature_disclaimer" rows="3" placeholder="Enter disclaimer text..."></textarea>
+              </div>
+
+              <!-- Preview Section -->
+              <div class="form-group">
+                <label class="form-label">Preview</label>
+                <div class="border p-3 rounded" style="min-height: 120px;">
+                  <div id="signaturePreview" class="text-center">
+                    <small class="text-muted">Signature preview will appear here</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div  class="modal-footer">
           <!-- <button style="margin-left: 50px;" type="button" class="btn btn-outline-secondary" createBtndata-bs-dismiss="modal">Cancel</button> -->
       
-          <button type="submit" class="btn btn-success" id="">Create user</button>
+          <button type="submit" class="btn btn-success" id="submitBtn">Create user</button>
             </div>
       </div>
     </form>
@@ -761,12 +799,112 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Show/hide parent admin select in Add User modal
+  // Show/hide parent admin select and signature section in Add User modal
   const usertypeSelect = document.getElementById('usertypeSelect');
   const adminSelectContainer = document.getElementById('adminSelectContainer');
+  const signatureSection = document.getElementById('signatureSection');
+
   if (usertypeSelect && adminSelectContainer) {
     usertypeSelect.addEventListener('change', function () {
-      adminSelectContainer.style.display = (this.value === 'IMAGING' || this.value === 'RADS') ? 'block' : 'none';
+      // Show admin select for IMAGING and RADS
+      adminSelectContainer.style.display = (this.value === 'imaging' || this.value === 'rads') ? 'block' : 'none';
+
+      // Show signature section for RADS only
+      if (signatureSection) {
+        if (this.value === 'rads') {
+          signatureSection.style.display = 'block';
+          if (document.getElementById('signatureFile')) {
+            document.getElementById('signatureFile').required = true;
+          }
+        } else {
+          signatureSection.style.display = 'none';
+          if (document.getElementById('signatureFile')) {
+            document.getElementById('signatureFile').required = false;
+          }
+        }
+      }
+    });
+  }
+
+  // Preview signature when file is selected
+  const signatureFileInput = document.getElementById('signatureFile');
+  if (signatureFileInput) {
+    signatureFileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const preview = document.getElementById('signaturePreview');
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.innerHTML = `
+            <img src="${e.target.result}" class="img-fluid" style="max-height: 120px; border: 1px solid #ddd; border-radius: 4px;">
+            <br><small class="text-muted">${file.name}</small>
+          `;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.innerHTML = '<small class="text-muted">Signature preview will appear here</small>';
+      }
+    });
+  }
+
+  // Reset modal function
+  window.resetAddUserModal = function() {
+    const form = document.getElementById('addUserForm');
+    if (form) form.reset();
+    if (signatureSection) signatureSection.style.display = 'none';
+    if (adminSelectContainer) adminSelectContainer.style.display = 'none';
+    document.getElementById('signaturePreview').innerHTML = '<small class="text-muted">Signature preview will appear here</small>';
+    if (document.getElementById('signatureFile')) {
+      document.getElementById('signatureFile').required = false;
+    }
+  };
+
+  // Handle form submission
+  const addUserForm = document.getElementById('addUserForm');
+  if (addUserForm) {
+    addUserForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Debug: Log form data
+      console.log('Form data being sent:');
+      for (let [key, value] of formData.entries()) {
+        console.log(key + ': ' + (value instanceof File ? value.name : value));
+      }
+
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+
+      // Add CSRF token
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      formData.append('csrfmiddlewaretoken', csrfToken);
+
+      fetch('/api/admin/create-user/', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert('User created successfully!');
+          bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+          location.reload(); // Refresh to show new user
+        } else {
+          alert('Error: ' + (data.message || 'Failed to create user'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating user. Please try again.');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Create user';
+      });
     });
   }
 

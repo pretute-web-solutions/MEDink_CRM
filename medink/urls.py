@@ -69,6 +69,7 @@ urlpatterns = [
     path('api/admin/hospitals/',admin_hospitals_api, name='admin_hospitals_api'),
     path('api/profile/', get_profile, name='get_profile'),
     path('api/profile/update/', update_profile, name='update_profile'),
+    path('api/admin/create-user/', create_user, name='create_user'),
 
 ]
     

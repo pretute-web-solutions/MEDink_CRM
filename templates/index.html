@@ -1940,12 +1940,14 @@ function updateCenterLabel() {
     let select = document.getElementById("centerSelect");
     let label = document.getElementById("centerLabel");
     label.textContent = select.options[select.selectedIndex].text;
+    applyFilters(); // Apply filters when center selection changes
 }
 
 function updateRadsLabel() {
     let select = document.getElementById("radsSelect");
     let label = document.getElementById("radsLabel");
     label.textContent = select.options[select.selectedIndex].text;
+    applyFilters(); // Apply filters when rads selection changes
 }
 </script>
 
@@ -2707,8 +2709,22 @@ function applyFilters() {
     const today = dateOnly(new Date());
     const yesterday = dateOnly(new Date(new Date().setDate(today.getDate() - 1)));
 
+    // Get current filter values
+    const centerFilter = document.getElementById("centerSelect").value.toUpperCase();
+    const radsFilter = document.getElementById("radsSelect").value.toUpperCase();
+
     rows.forEach(row => {
         let show = true;
+
+        /* ---------------- CENTER FILTER ---------------- */
+        const rowCenter = (row.dataset.center || "").toUpperCase();
+        if (centerFilter !== "ALL" && rowCenter !== centerFilter)
+            show = false;
+
+        /* ---------------- RADS FILTER ------------------ */
+        const rowRads = (row.dataset.rads || "").toUpperCase();
+        if (radsFilter !== "ALL" && rowRads !== radsFilter)
+            show = false;
 
         /* ---------------- STATUS FILTER ---------------- */
         const rowStatus = row.querySelector('.status')?.textContent.trim().toUpperCase() || "";
@@ -2725,11 +2741,10 @@ function applyFilters() {
         const pid = row.querySelector("td:nth-child(2) small")?.textContent.trim().toUpperCase() || "";
         if (searchText && !name.includes(searchText) && !pid.includes(searchText))
             show = false;
-        
+
         /* ---------------- ASSIGN FILTER ------------------ */
         const assignFilter = document.getElementById("assignSelect").value;
 
-        const rowRads = (row.dataset.rads || "").toUpperCase();  
         const isAssigned = rowRads !== "" && rowRads !== "NONE";
 
         if (assignFilter === "ASSIGNED" && !isAssigned)
@@ -3699,7 +3714,7 @@ document.getElementById("selectAll").addEventListener("change", function(){
     updateBulkIcons();
 });
 
-// datae range
+// date range
 let selectedDateFilter = "ALL";
 let dayOffset = 0;   // 0 = today, 1 = yesterday ... max 7
 let tempSelectedDay = dateOnly(new Date());
@@ -3851,9 +3866,6 @@ function openDateRange() {
 function closeCalendar() {
     document.getElementById("calendarContainer").style.display = "none";
 }
-
-let selectedStart = null;
-let selectedEnd = null;
 
 const picker = new Litepicker({
     element: document.getElementById('calendarInput'),
@@ -4168,7 +4180,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========== PROFILE MODAL FUNCTIONS ==========
-let profileEditMode = false;
 
 // Profile icon click handler is now attached via onclick attribute
 
@@ -4498,6 +4509,169 @@ window.addEventListener('load', function() {
 function openChangePass() {
     alert("Change password page banega (yahan redirect karenge)");
 }
+
+function filterPatients(status) {
+  currentStatusFilter = status.toUpperCase();
+  applyFilters();
+
+  // Highlight selected filter
+  document.querySelectorAll('#statusFilter span').forEach(el => el.classList.remove('active'));
+  const activeEl = document.querySelector(`#filter-${status.toLowerCase()}`);
+  if (activeEl) activeEl.classList.add('active');
+}
+
+function dateOnly(d) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function getDateByOffset(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() - offset);
+  return dateOnly(d);
+}
+
+function setDateFilter(type) {
+  const allChips = document.querySelectorAll(".date-chip-box .chip");
+  const dayChip = document.getElementById("dayChip");
+
+  // 🔥 remove active from all
+  allChips.forEach(c => c.classList.remove("active"));
+
+  /* ===== ALL ===== */
+  if (type === "ALL") {
+    selectedDateFilter = "ALL";
+    dayOffset = 0;
+
+    // 🔥 ALL chip ko active banao
+    allChips[0].classList.add("active"); // first chip = ALL
+
+    applyFilters();
+    return;
+  }
+
+  /* ===== TODAY ===== */
+  if (type === "TODAY") {
+    selectedDateFilter = "TODAY";
+    dayOffset = 0;
+    tempSelectedDay = getDateByOffset(0);
+
+    dayChip.textContent = "TODAY";
+    dayChip.classList.add("active");
+
+    applyFilters();
+    return;
+  }
+
+  /* ===== MONTH ===== */
+  if (type === "MONTH") {
+    selectedDateFilter = "MONTH";
+    event.target.classList.add("active");
+
+    applyFilters();
+    return;
+  }
+}
+
+function formatChipDate(dateObj) {
+  const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const d = dateObj.getDate();
+  const m = months[dateObj.getMonth()];
+  return `${d}-${m}`;
+}
+
+function goPrevDay() {
+  if (dayOffset >= 7) return; // max last 7 days
+
+  dayOffset++;
+  tempSelectedDay = getDateByOffset(dayOffset);
+  selectedDateFilter = "DAY-JUMP";
+
+  const chip = document.getElementById("dayChip");
+
+  if (dayOffset === 1) {
+    chip.textContent = "Y-DAY"; // ✅ exactly yesterday
+  } else {
+    chip.textContent = formatChipDate(tempSelectedDay); // ✅ date start
+  }
+
+  document.querySelectorAll(".date-chip-box .chip")
+    .forEach(c => c.classList.remove("active"));
+
+  chip.classList.add("active");
+
+  applyFilters();
+}
+
+function goNextDay() {
+  if (dayOffset <= 0) return; // future not allowed
+
+  dayOffset--;
+  tempSelectedDay = getDateByOffset(dayOffset);
+
+  const chip = document.getElementById("dayChip");
+
+  if (dayOffset === 0) {
+    chip.textContent = "TODAY";
+    selectedDateFilter = "TODAY";
+  }
+  else if (dayOffset === 1) {
+    chip.textContent = "Y-DAY";
+    selectedDateFilter = "DAY-JUMP";
+  }
+  else {
+    chip.textContent = formatChipDate(tempSelectedDay);
+    selectedDateFilter = "DAY-JUMP";
+  }
+
+  document.querySelectorAll(".date-chip-box .chip")
+    .forEach(c => c.classList.remove("active"));
+
+  chip.classList.add("active");
+
+  applyFilters();
+}
+
+function openDateRange() {
+  const box = document.getElementById("calendarContainer");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
+
+function closeCalendar() {
+  document.getElementById("calendarContainer").style.display = "none";
+}
+
+let selectedStart = null;
+let selectedEnd = null;
+
+function applyDateRange() {
+  if (!selectedStart || !selectedEnd) {
+    alert("Please select a valid range.");
+    return;
+  }
+
+  startDate = selectedStart;
+  endDate = selectedEnd;
+  selectedDateFilter = "RANGE";
+
+  closeCalendar();
+  applyFilters();
+}
+
+// Initialize on window load
+window.onload = function () {
+  dayOffset = 0;
+  selectedDateFilter = "TODAY";
+  tempSelectedDay = getDateByOffset(0);
+
+  const chip = document.getElementById("dayChip");
+  chip.textContent = "TODAY";
+  chip.classList.add("active");
+
+  filterPatients("ALL");
+  filterByScanType("ALL");
+  applyFilters();
+  updateScanActiveUI();
+};
 
 </script>
 </body>
